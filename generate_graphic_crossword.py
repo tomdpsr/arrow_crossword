@@ -129,16 +129,11 @@ def draw_arrow(screen, df_map):
 def draw_text(screen, definitions):
     # Draw the arrows
     for d in definitions:
-        d.draw(screen)
+        d.draw_text(screen)
+        d.draw_seperator(screen)
 
 
-def generate_graphic_crossword(filled_map: str):
-
-    # Initialize pygame
-    pygame.init()
-
-    f = open(f"resources/filled_maps/{filled_map}.json")
-    filled_map_json = json.load(f)
+def init_definitions(filled_map_json) -> list[Definition]:
     all_definitions = []
     for d in filled_map_json["definitions"]:
         dd = Definition(
@@ -149,6 +144,23 @@ def generate_graphic_crossword(filled_map: str):
             definition=d["definition"],
         )
         all_definitions.append(dd)
+
+    # Sorry for the n square
+    for d in all_definitions:
+        if d.linked_definition is None:
+            for d2 in all_definitions:
+                if d.i == d2.i and d.j == d2.j and d.word != d2.word:
+                    d.linked_definition, d2.linked_definition = d2, d
+    return all_definitions
+
+
+def generate_graphic_crossword(filled_map: str):
+    # Initialize pygame
+    pygame.init()
+
+    f = open(f"resources/filled_maps/{filled_map}.json")
+    filled_map_json = json.load(f)
+    all_definitions = init_definitions(filled_map_json)
 
     df_map = pd.read_csv(
         f"resources/maps/{filled_map_json["map_file"]}.csv", header=None, sep=","
@@ -179,19 +191,13 @@ def generate_graphic_crossword(filled_map: str):
         draw_arrow(screen, df_map)
         draw_text(screen, all_definitions)
         if text_editing:
-            pygame.draw.rect(
-                screen,
-                BLACK,
-                [
-                    0,
-                    0,
-                    WIDTH * 2,
-                    HEIGHT * 2,
-                ],
+            font = pygame.font.SysFont("Futura", 11)
+            screen.blit(font.render("Nouvelle définition", True, WHITE), (500, 120))
+            screen.blit(
+                font.render(f"Mot : [{last_definition.word}]", True, WHITE), (500, 135)
             )
-            font = pygame.font.SysFont("Futura", 20)
-            img = font.render(text_filler, True, WHITE)
-            screen.blit(img, (0, 0))
+            screen.blit(font.render("->", True, WHITE), (500, 150))
+            screen.blit(font.render(text_filler, True, WHITE), (515, 150))
 
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
@@ -219,7 +225,11 @@ def generate_graphic_crossword(filled_map: str):
                 if event.key == pygame.K_RETURN:
                     for d in all_definitions:
                         if getattr(d, "word") == getattr(last_definition, "word"):
-                            d.definition = text_filler
+                            d.update_definition(text_filler)
+                            print(1)
+                    text_editing = False
+                    text_filler = ""
+                if event.key == pygame.K_ESCAPE:
                     text_editing = False
                     text_filler = ""
 

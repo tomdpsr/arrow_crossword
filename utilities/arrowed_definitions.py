@@ -9,11 +9,9 @@ ArrowedDefinition = namedtuple(
         "j_diff",
         "is_horizontal",
         "unicode_char",
-        "text_diff",
+        "upper_location",
     ],
 )
-
-TEXT_DIFF_BASE = 7
 
 ArrowedDefinitions = [
     ArrowedDefinition(
@@ -22,7 +20,7 @@ ArrowedDefinitions = [
         j_diff=1,
         is_horizontal=True,
         unicode_char="\u2192",
-        text_diff=-TEXT_DIFF_BASE,
+        upper_location=True,
     ),
     ArrowedDefinition(
         definition_type="2",
@@ -30,7 +28,7 @@ ArrowedDefinitions = [
         j_diff=0,
         is_horizontal=False,
         unicode_char="\u2193",
-        text_diff=TEXT_DIFF_BASE,
+        upper_location=False,
     ),
     ArrowedDefinition(
         definition_type="3",
@@ -38,7 +36,7 @@ ArrowedDefinitions = [
         j_diff=1,
         is_horizontal=False,
         unicode_char="\u21B4",
-        text_diff=-TEXT_DIFF_BASE,
+        upper_location=True,
     ),
     ArrowedDefinition(
         definition_type="4",
@@ -46,7 +44,7 @@ ArrowedDefinitions = [
         j_diff=-1,
         is_horizontal=False,
         unicode_char="\u21B4",
-        text_diff=TEXT_DIFF_BASE,
+        upper_location=True,
     ),
     ArrowedDefinition(
         definition_type="5",
@@ -54,7 +52,7 @@ ArrowedDefinitions = [
         j_diff=0,
         is_horizontal=True,
         unicode_char="\u21B1",
-        text_diff=TEXT_DIFF_BASE,
+        upper_location=False,
     ),
     ArrowedDefinition(
         definition_type="6",
@@ -62,7 +60,7 @@ ArrowedDefinitions = [
         j_diff=0,
         is_horizontal=True,
         unicode_char="\u21B3",
-        text_diff=TEXT_DIFF_BASE,
+        upper_location=False,
     ),
 ]
 
