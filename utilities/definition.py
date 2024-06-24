@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import pygame
 
 from utilities.arrowed_definitions import get_arrowed_definitions
-from utilities.graphical import BLACK, MARGIN, WIDTH, HEIGHT
+from graphical_utilities.constants import BLACK, MARGIN, WIDTH, HEIGHT, MAIN_FONT
 
 FONT_SIZE = 8
 
@@ -39,7 +39,8 @@ class Definition:
                 wrapped_definition[index + 1] = "-" + wrapped_definition[index + 1]
         self.wrapped_definition = wrapped_definition
 
-    def calculate_diff(self, iterate: int, nb_values: int, center_case):
+    @staticmethod
+    def calculate_diff(iterate: int, nb_values: int, center_case):
         diff_j = 0
         if nb_values == 1:
             diff_j = center_case
@@ -50,11 +51,11 @@ class Definition:
                 diff_j = center_case + (FONT_SIZE / 2)
         if nb_values == 3:
             if iterate == 0:
-                diff_j = center_case - (FONT_SIZE)
+                diff_j = center_case - FONT_SIZE
             if iterate == 1:
                 diff_j = center_case
             if iterate == 2:
-                diff_j = center_case + (FONT_SIZE)
+                diff_j = center_case + FONT_SIZE
         return diff_j
 
     def calculate_center(self, self_nb_values: int, linked_nb_values: int):
@@ -71,7 +72,7 @@ class Definition:
             return HEIGHT - (center / 2)
 
     def update_images(self):
-        font = pygame.font.SysFont("trebuchetms", FONT_SIZE, bold=True)
+        font = pygame.font.SysFont(MAIN_FONT, FONT_SIZE, bold=True)
         self.images, self.rects = [], []
         for wd in range(len(self.wrapped_definition)):
             image = font.render(self.wrapped_definition[wd].upper(), True, BLACK)

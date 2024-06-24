@@ -1,136 +1,20 @@
+import datetime
 import json
 
 import pandas as pd
 import pygame
 
+from graphical_utilities.main_panel import MainPanel
+from graphical_utilities.menu_panel import MenuPanel
 from utilities.arrowed_definitions import get_arrowed_definitions
 from utilities.definition import Definition, save_definitions_to_json
-from utilities.graphical import (
-    MARGIN_TRIANGLE,
-    WIDTH_TRIANGLE,
+from graphical_utilities.constants import (
     MARGIN,
     WIDTH,
     HEIGHT,
     WHITE,
-    BLUE,
-    BLUE_LIGHT,
-    BLACK,
+    BLACK, MENU_HEIGHT,
 )
-
-
-def get_definition_from_position(
-    i: int, j: int, definition_type: str, definitions: list[Definition]
-) -> Definition:
-    return next(
-        d
-        for d in definitions
-        if d["i"] == i and d["j"] == j and d["definition_type"] == definition_type
-    )
-
-
-def draw_grid(screen, df_map):
-    # Draw the grid
-    for row in range(len(df_map)):
-        for column in range(len(df_map[row])):
-            if df_map[row][column].isnumeric():
-                color = WHITE
-            else:
-                color = BLUE
-            pygame.draw.rect(
-                screen,
-                color,
-                [
-                    (MARGIN + WIDTH) * column + MARGIN,
-                    (MARGIN + HEIGHT) * row + MARGIN,
-                    WIDTH,
-                    HEIGHT,
-                ],
-            )
-            if df_map[row][column].isnumeric():
-                pygame.draw.rect(
-                    screen,
-                    BLACK,
-                    [
-                        (MARGIN + WIDTH) * column + MARGIN,
-                        (MARGIN + HEIGHT) * row + MARGIN,
-                        WIDTH,
-                        HEIGHT,
-                    ],
-                    MARGIN,
-                )
-
-
-def draw_save_button(screen):
-    save_rect = pygame.draw.rect(
-        screen,
-        WHITE,
-        [
-            550,
-            20,
-            WIDTH,
-            HEIGHT,
-        ],
-    )
-    pygame.draw.rect(
-        screen,
-        WHITE,
-        [
-            548,
-            18,
-            WIDTH + 8,
-            HEIGHT + 8,
-        ],
-        MARGIN * 2,
-    )
-    font = pygame.font.SysFont("Futura", 18)
-    img = font.render("SAVE", True, BLACK)
-    screen.blit(img, (558, 38))
-    return save_rect
-
-
-def draw_arrow(screen, df_map):
-    # Draw the arrows
-    for row in range(len(df_map)):
-        for column in range(len(df_map[row])):
-            if df_map[row][column].isnumeric():
-                for c in df_map[row][column]:
-                    defi = get_arrowed_definitions(c)
-                    base_triangle_x = (MARGIN + WIDTH) * (
-                        column + getattr(defi, "j_diff")
-                    )
-                    base_triangle_y = (MARGIN + HEIGHT) * (
-                        row + getattr(defi, "i_diff")
-                    )
-
-                    pygame.draw.polygon(
-                        screen,
-                        BLUE_LIGHT,
-                        (
-                            (
-                                base_triangle_x + MARGIN_TRIANGLE,
-                                base_triangle_y + MARGIN_TRIANGLE,
-                            ),
-                            (
-                                base_triangle_x
-                                + MARGIN_TRIANGLE
-                                + WIDTH_TRIANGLE * (not getattr(defi, "is_horizontal")),
-                                base_triangle_y
-                                + MARGIN_TRIANGLE
-                                + WIDTH_TRIANGLE * getattr(defi, "is_horizontal"),
-                            ),
-                            (
-                                base_triangle_x + MARGIN_TRIANGLE + WIDTH_TRIANGLE / 2,
-                                base_triangle_y + MARGIN_TRIANGLE + WIDTH_TRIANGLE / 2,
-                            ),
-                        ),
-                    )
-
-
-def draw_text(screen, definitions):
-    # Draw the arrows
-    for d in definitions:
-        d.draw_text(screen)
-        d.draw_seperator(screen)
 
 
 def init_definitions(filled_map_json) -> list[Definition]:
@@ -154,6 +38,10 @@ def init_definitions(filled_map_json) -> list[Definition]:
     return all_definitions
 
 
+def draw_save_button(menu_sub_surface):
+    pass
+
+
 def generate_graphic_crossword(filled_map: str):
     # Initialize pygame
     pygame.init()
@@ -167,9 +55,18 @@ def generate_graphic_crossword(filled_map: str):
     )
     df_map = df_map.values.tolist()
 
+    WINDOW_WIDTH = len(df_map[0]) * (WIDTH + MARGIN) + MARGIN
+    WINDOW_HEIGHT = len(df_map) * (HEIGHT + MARGIN) + MARGIN
+
     # Set the HEIGHT and WIDTH of the screen
-    WINDOW_SIZE = [650, 675]
+    WINDOW_SIZE = [WINDOW_WIDTH, WINDOW_HEIGHT + MENU_HEIGHT]
     screen = pygame.display.set_mode(WINDOW_SIZE)
+
+
+    # Surface
+    game_sub_surface = MainPanel(screen, WINDOW_WIDTH, WINDOW_HEIGHT)
+    menu_sub_surface = MenuPanel(screen, WINDOW_HEIGHT, WINDOW_WIDTH)
+
 
     # Loop until the user clicks the close button.
     done = False
@@ -186,18 +83,13 @@ def generate_graphic_crossword(filled_map: str):
         # Set the screen background
         screen.fill(BLACK)
 
-        draw_grid(screen, df_map)
-        save_rect = draw_save_button(screen)
-        draw_arrow(screen, df_map)
-        draw_text(screen, all_definitions)
+        game_sub_surface.draw_grid(df_map)
+        save_rect = menu_sub_surface.draw_save_button()
+        screen_rect = menu_sub_surface.draw_screen_button()
+        game_sub_surface.draw_arrow(df_map)
+        game_sub_surface.draw_text(all_definitions)
         if text_editing:
-            font = pygame.font.SysFont("Futura", 11)
-            screen.blit(font.render("Nouvelle définition", True, WHITE), (500, 120))
-            screen.blit(
-                font.render(f"Mot : [{last_definition.word}]", True, WHITE), (500, 135)
-            )
-            screen.blit(font.render("->", True, WHITE), (500, 150))
-            screen.blit(font.render(text_filler, True, WHITE), (515, 150))
+            menu_sub_surface.draw_text_editing(last_definition, text_filler)
 
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
@@ -217,6 +109,9 @@ def generate_graphic_crossword(filled_map: str):
                         filled_map_json["map_file"],
                         filled_map,
                     )
+                if screen_rect.collidepoint(event.pos):
+                    print("screen")
+                    pygame.image.save(game_sub_surface.subsurface, f"screen/export{filled_map}_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.png")
             if event.type == pygame.TEXTINPUT and text_editing:
                 text_filler += event.text
             if event.type == event.type == pygame.KEYDOWN:
@@ -226,7 +121,6 @@ def generate_graphic_crossword(filled_map: str):
                     for d in all_definitions:
                         if getattr(d, "word") == getattr(last_definition, "word"):
                             d.update_definition(text_filler)
-                            print(1)
                     text_editing = False
                     text_filler = ""
                 if event.key == pygame.K_ESCAPE:
@@ -234,7 +128,7 @@ def generate_graphic_crossword(filled_map: str):
                     text_filler = ""
 
         # Limit to 60 frames per second
-        clock.tick(60)
+        clock.tick(1)
 
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
