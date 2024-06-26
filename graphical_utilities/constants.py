@@ -20,6 +20,7 @@ MENU_HEIGHT = WIDTH*(10/6)
 #DEFINITION_FONT_SIZE = int((WIDTH/60)*8)
 DEFINITION_FONT_SIZE = 10
 MENU_FONT_SIZE = 14
+LETTER_FONT_SIZE = 18
 
 #MAIN_FONT = 'arial'
 MAIN_FONT_PATH = 'resources/fonts/trebuchet-ms-grassetto.ttf'

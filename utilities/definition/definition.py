@@ -1,5 +1,3 @@
-import datetime
-import json
 import textwrap
 from dataclasses import dataclass
 
@@ -14,7 +12,7 @@ class Definition:
     definition_type: str
     i: int
     j: int
-    get_arrowed_place_holder: ArrowedPlaceHolder = None
+    arrowed_place_holder: ArrowedPlaceHolder = None
     word: str = ""
     previous_word: str = ""
     is_set: bool = False
@@ -24,11 +22,10 @@ class Definition:
     wrapped_definition = None
     linked_definition = None
     rects = []
-    images = []
 
     def __post_init__(self):
         self.update_definition(self.definition)
-        self.get_arrowed_place_holder = get_arrowed_place_holder(self.definition_type)
+        self.arrowed_place_holder = get_arrowed_place_holder(self.definition_type)
 
     def update_definition(self, new_definition):
         self.definition = new_definition
@@ -62,19 +59,17 @@ class Definition:
 
     def calculate_center_subdivision(self, self_nb_values: int, linked_nb_values: int):
         center = self.calculate_center(self_nb_values, linked_nb_values)
-        is_upper_location = getattr(
-            get_arrowed_place_holder(self.definition_type), "upper_location"
-        )
+        is_upper_location = self.arrowed_place_holder.upper_location
         if is_upper_location:
             return center / 2
         else:
             return HEIGHT - (center / 2)
 
     def draw_definition(self, screen, font):
-        self.images, self.rects = [], []
+        images, self.rects = [], []
         for wd in range(len(self.wrapped_definition)):
             image = font.render(self.wrapped_definition[wd].upper(), True, BLACK)
-            self.images.append(image)
+            images.append(image)
             if self.linked_definition is not None:
                 center_case = self.calculate_center_subdivision(
                     len(self.wrapped_definition),
@@ -91,13 +86,26 @@ class Definition:
             )
             self.rects.append(rect)
         for i in range(len(self.wrapped_definition)):
-            screen.blit(self.images[i], self.rects[i])
+            screen.blit(images[i], self.rects[i])
+
+    def draw_definition_letters(self, screen, font):
+        letter_i = self.i + self.arrowed_place_holder.i_diff
+        letter_j = self.j + self.arrowed_place_holder.j_diff
+        for l in self.word:
+            letter = font.render(l.upper(), True, BLACK)
+            rect = letter.get_rect(
+                center=(
+                    ((MARGIN + WIDTH) * letter_j + MARGIN + WIDTH / 2),
+                    (MARGIN + HEIGHT) * letter_i + MARGIN + HEIGHT / 2),
+                )
+            screen.blit(letter, rect)
+            if self.arrowed_place_holder.is_horizontal:
+                letter_j += 1
+            else:
+                letter_i += 1
 
     def draw_seperator(self, screen):
-        is_upper_location = getattr(
-            get_arrowed_place_holder(self.definition_type), "upper_location"
-        )
-        if self.linked_definition is not None and is_upper_location:
+        if self.linked_definition is not None and self.arrowed_place_holder.upper_location:
             center_case = self.calculate_center(
                 len(self.wrapped_definition),
                 len(self.linked_definition.wrapped_definition),

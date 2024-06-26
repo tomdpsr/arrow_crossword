@@ -39,9 +39,11 @@ class MenuPanel:
     def draw_save_button(self, font):
         return self.draw_button('SAVE', 20, 20, font)
 
-
     def draw_screen_button(self, font):
         return self.draw_button('SCREEN', self.width-100, 20, font)
+
+    def draw_letter_button(self, font):
+        return self.draw_button('LETTERS', self.width-200, 20, font)
 
     def draw_text_editing(self, last_definition, text_filler, font):
         self.subsurface.blit(font.render("Nouvelle définition", True, WHITE), (110, 20))

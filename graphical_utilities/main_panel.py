@@ -77,8 +77,10 @@ class MainPanel:
                             ),
                         )
 
-    def draw_definitions(self, definitions, font):
+    def draw_definitions(self, definitions, definition_font, letter_font,  with_definition_letters: bool):
         # Draw the arrows
         for d in definitions:
-            d.draw_definition(self.subsurface, font)
+            d.draw_definition(self.subsurface, definition_font)
             d.draw_seperator(self.subsurface)
+            if with_definition_letters:
+                d.draw_definition_letters(self.subsurface, letter_font)

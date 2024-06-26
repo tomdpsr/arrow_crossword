@@ -10,7 +10,7 @@ from graphical_utilities.constants import (
     MARGIN,
     WIDTH,
     HEIGHT,
-    BLACK, MENU_HEIGHT, DEFINITION_FONT_SIZE, MENU_FONT_SIZE, MAIN_FONT_PATH,
+    BLACK, MENU_HEIGHT, DEFINITION_FONT_SIZE, MENU_FONT_SIZE, MAIN_FONT_PATH, LETTER_FONT_SIZE,
 )
 from utilities.definition.definition import Definition
 from utilities.definition.utilities import save_definitions_to_json
@@ -69,6 +69,7 @@ def generate_graphic_crossword(filled_map: str):
     clock = pygame.time.Clock()
 
     text_editing = False
+    with_letters = False
     last_definition = None
     text_filler = ""
     screen.fill(BLACK)
@@ -77,6 +78,7 @@ def generate_graphic_crossword(filled_map: str):
     # Fonts
     menu_font = pygame.font.Font(MAIN_FONT_PATH, MENU_FONT_SIZE)
     definition_font = pygame.font.Font(MAIN_FONT_PATH, DEFINITION_FONT_SIZE)
+    letter_font = pygame.font.Font(MAIN_FONT_PATH, LETTER_FONT_SIZE)
 
     # -------- Main Program Loop -----------
     while not done:
@@ -87,8 +89,9 @@ def generate_graphic_crossword(filled_map: str):
         game_sub_surface.draw_grid(df_map)
         save_rect = menu_sub_surface.draw_save_button(menu_font)
         screen_rect = menu_sub_surface.draw_screen_button(menu_font)
+        letter_rect = menu_sub_surface.draw_letter_button(menu_font)
         game_sub_surface.draw_arrow(df_map)
-        (game_sub_surface.draw_definitions(all_definitions, definition_font))
+        game_sub_surface.draw_definitions(all_definitions, definition_font,letter_font, with_letters)
         if text_editing:
             menu_sub_surface.draw_text_editing(last_definition, text_filler, menu_font)
 
@@ -103,7 +106,6 @@ def generate_graphic_crossword(filled_map: str):
                             last_definition = definition
                             print(definition.definition)
                 if save_rect.collidepoint(event.pos):
-                    print("bouton")
                     save_definitions_to_json(
                         all_definitions,
                         filled_map_json["score"],
@@ -111,8 +113,9 @@ def generate_graphic_crossword(filled_map: str):
                         filled_map,
                     )
                 if screen_rect.collidepoint(event.pos):
-                    print("screen")
                     pygame.image.save(game_sub_surface.subsurface, f"screen/export{filled_map}_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.png")
+                if letter_rect.collidepoint(event.pos):
+                    with_letters = not with_letters
             if event.type == pygame.TEXTINPUT and text_editing:
                 text_filler += event.text
             if event.type == event.type == pygame.KEYDOWN:
