@@ -1,2 +1,6 @@
 .idea/
 resources/dicts/perso
+.env
+arrow_crossword_graphical_interface/screen/*
+__pycache__/
+data/*/

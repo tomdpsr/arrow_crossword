@@ -1,8 +1,14 @@
 import click
 
-from create_dictionnary import create_dictionnary
-from generate_arrow_crossword import generate_arrow_crossword
-from generate_graphic_crossword import generate_graphic_crossword
+from arrow_crossword_generation.create_dictionnary import create_dictionary
+from arrow_crossword_generation.enrich_arrow_crossword_definition import (
+    enrich_arrow_crossword_definition,
+)
+from arrow_crossword_generation.generate_arrow_crossword import generate_arrow_crossword
+from arrow_crossword_generation.utilities.constants import DICTIONARY
+from arrow_crossword_graphical_interface.generate_graphic_crossword import (
+    generate_graphic_crossword,
+)
 
 
 @click.group()
@@ -12,26 +18,43 @@ def cli():
 
 @cli.command()
 @click.option(
-    "-d", "--dict-folder", show_default=True, default="usito", help="help"
+    "-d",
+    "--dict-folder",
+    show_default=True,
+    default=DICTIONARY.FRENCH_DICTIONARY,
+    help="help",
 )
-@click.option("-m", "--map-file", show_default=True, default="map_1", help="help")
-def generate_arrow_crosswords(dict_folder, map_file):
-    for i in range(20):
-        generate_arrow_crossword(dict_folder, map_file)
-
-
-@cli.command()
-@click.option("-d", "--dict-folder", show_default=True, default="perso", help="help")
-def create_dictionnaries(dict_folder):
-    create_dictionnary(dict_folder)
+def create_dictionaries(dict_folder):
+    create_dictionary(dict_folder)
 
 
 @cli.command()
 @click.option(
-    "-f", "--filled-map", show_default=True, default="20240625125906_8", help="help"
+    "-d",
+    "--dictionary",
+    show_default=True,
+    default=DICTIONARY.FRENCH_DICTIONARY,
+    help="help",
 )
-def generate_graphic_crosswords(filled_map):
-    generate_graphic_crossword(filled_map)
+@click.option("-m", "--map-file", show_default=True, default="map_1", help="help")
+def generate_arrow_crosswords(dictionary, map_file):
+    generate_arrow_crossword(dictionary, map_file)
+
+
+@cli.command()
+@click.option(
+    "-d", "--definitions", show_default=True, default="20240626211422_3", help="help"
+)
+def enrich_arrow_crossword_definitions(definitions):
+    enrich_arrow_crossword_definition(definitions)
+
+
+@cli.command()
+@click.option(
+    "-d", "--definitions", show_default=True, default="20240626211422_3", help="help"
+)
+def generate_graphic_crosswords(definitions):
+    generate_graphic_crossword(definitions)
 
 
 if __name__ == "__main__":
