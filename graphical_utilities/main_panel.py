@@ -2,7 +2,7 @@ import pygame
 
 from graphical_utilities.constants import WHITE, BLUE, MARGIN, WIDTH, HEIGHT, BLACK, BLUE_LIGHT, MARGIN_TRIANGLE, \
     WIDTH_TRIANGLE
-from utilities.arrowed_definitions import get_arrowed_definitions
+from utilities.arrowed_place_holder.arrowed_place_holder import get_arrowed_place_holder
 
 
 class MainPanel:
@@ -46,7 +46,7 @@ class MainPanel:
             for column in range(len(df_map[row])):
                 if df_map[row][column].isnumeric():
                     for c in df_map[row][column]:
-                        defi = get_arrowed_definitions(c)
+                        defi = get_arrowed_place_holder(c)
                         base_triangle_x = (MARGIN + WIDTH) * (
                                 column + getattr(defi, "j_diff")
                         )
@@ -77,8 +77,8 @@ class MainPanel:
                             ),
                         )
 
-    def draw_text(self, definitions):
+    def draw_definitions(self, definitions, font):
         # Draw the arrows
         for d in definitions:
-            d.draw_text(self.subsurface)
+            d.draw_definition(self.subsurface, font)
             d.draw_seperator(self.subsurface)

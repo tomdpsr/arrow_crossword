@@ -6,15 +6,14 @@ import pygame
 
 from graphical_utilities.main_panel import MainPanel
 from graphical_utilities.menu_panel import MenuPanel
-from utilities.arrowed_definitions import get_arrowed_definitions
-from utilities.definition import Definition, save_definitions_to_json
 from graphical_utilities.constants import (
     MARGIN,
     WIDTH,
     HEIGHT,
-    WHITE,
-    BLACK, MENU_HEIGHT,
+    BLACK, MENU_HEIGHT, DEFINITION_FONT_SIZE, MENU_FONT_SIZE, MAIN_FONT_PATH,
 )
+from utilities.definition.definition import Definition
+from utilities.definition.utilities import save_definitions_to_json
 
 
 def init_definitions(filled_map_json) -> list[Definition]:
@@ -36,11 +35,6 @@ def init_definitions(filled_map_json) -> list[Definition]:
                 if d.i == d2.i and d.j == d2.j and d.word != d2.word:
                     d.linked_definition, d2.linked_definition = d2, d
     return all_definitions
-
-
-def draw_save_button(menu_sub_surface):
-    pass
-
 
 def generate_graphic_crossword(filled_map: str):
     # Initialize pygame
@@ -77,6 +71,13 @@ def generate_graphic_crossword(filled_map: str):
     text_editing = False
     last_definition = None
     text_filler = ""
+    screen.fill(BLACK)
+
+
+    # Fonts
+    menu_font = pygame.font.Font(MAIN_FONT_PATH, MENU_FONT_SIZE)
+    definition_font = pygame.font.Font(MAIN_FONT_PATH, DEFINITION_FONT_SIZE)
+
     # -------- Main Program Loop -----------
     while not done:
 
@@ -84,12 +85,12 @@ def generate_graphic_crossword(filled_map: str):
         screen.fill(BLACK)
 
         game_sub_surface.draw_grid(df_map)
-        save_rect = menu_sub_surface.draw_save_button()
-        screen_rect = menu_sub_surface.draw_screen_button()
+        save_rect = menu_sub_surface.draw_save_button(menu_font)
+        screen_rect = menu_sub_surface.draw_screen_button(menu_font)
         game_sub_surface.draw_arrow(df_map)
-        game_sub_surface.draw_text(all_definitions)
+        (game_sub_surface.draw_definitions(all_definitions, definition_font))
         if text_editing:
-            menu_sub_surface.draw_text_editing(last_definition, text_filler)
+            menu_sub_surface.draw_text_editing(last_definition, text_filler, menu_font)
 
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
@@ -128,7 +129,7 @@ def generate_graphic_crossword(filled_map: str):
                     text_filler = ""
 
         # Limit to 60 frames per second
-        clock.tick(1)
+        clock.tick(60)
 
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()

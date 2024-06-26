@@ -12,7 +12,7 @@ def cli():
 
 @cli.command()
 @click.option(
-    "-d", "--dict-folder", show_default=True, default="full_dict", help="help"
+    "-d", "--dict-folder", show_default=True, default="usito", help="help"
 )
 @click.option("-m", "--map-file", show_default=True, default="map_1", help="help")
 def generate_arrow_crosswords(dict_folder, map_file):
@@ -28,7 +28,7 @@ def create_dictionnaries(dict_folder):
 
 @cli.command()
 @click.option(
-    "-f", "--filled-map", show_default=True, default="20240619231339_8", help="help"
+    "-f", "--filled-map", show_default=True, default="20240625125906_8", help="help"
 )
 def generate_graphic_crosswords(filled_map):
     generate_graphic_crossword(filled_map)

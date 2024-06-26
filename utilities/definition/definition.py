@@ -5,10 +5,8 @@ from dataclasses import dataclass
 
 import pygame
 
-from utilities.arrowed_definitions import get_arrowed_definitions
-from graphical_utilities.constants import BLACK, MARGIN, WIDTH, HEIGHT, MAIN_FONT
-
-FONT_SIZE = 8
+from graphical_utilities.constants import BLACK, MARGIN, WIDTH, HEIGHT, DEFINITION_FONT_SIZE
+from utilities.arrowed_place_holder.arrowed_place_holder import get_arrowed_place_holder, ArrowedPlaceHolder
 
 
 @dataclass
@@ -16,6 +14,7 @@ class Definition:
     definition_type: str
     i: int
     j: int
+    get_arrowed_place_holder: ArrowedPlaceHolder = None
     word: str = ""
     previous_word: str = ""
     is_set: bool = False
@@ -29,7 +28,7 @@ class Definition:
 
     def __post_init__(self):
         self.update_definition(self.definition)
-        self.update_images()
+        self.get_arrowed_place_holder = get_arrowed_place_holder(self.definition_type)
 
     def update_definition(self, new_definition):
         self.definition = new_definition
@@ -46,16 +45,16 @@ class Definition:
             diff_j = center_case
         if nb_values == 2:
             if iterate == 0:
-                diff_j = center_case - (FONT_SIZE / 2)
+                diff_j = center_case - (DEFINITION_FONT_SIZE / 2)
             if iterate == 1:
-                diff_j = center_case + (FONT_SIZE / 2)
+                diff_j = center_case + (DEFINITION_FONT_SIZE / 2)
         if nb_values == 3:
             if iterate == 0:
-                diff_j = center_case - FONT_SIZE
+                diff_j = center_case - DEFINITION_FONT_SIZE
             if iterate == 1:
                 diff_j = center_case
             if iterate == 2:
-                diff_j = center_case + FONT_SIZE
+                diff_j = center_case + DEFINITION_FONT_SIZE
         return diff_j
 
     def calculate_center(self, self_nb_values: int, linked_nb_values: int):
@@ -64,15 +63,14 @@ class Definition:
     def calculate_center_subdivision(self, self_nb_values: int, linked_nb_values: int):
         center = self.calculate_center(self_nb_values, linked_nb_values)
         is_upper_location = getattr(
-            get_arrowed_definitions(self.definition_type), "upper_location"
+            get_arrowed_place_holder(self.definition_type), "upper_location"
         )
         if is_upper_location:
             return center / 2
         else:
             return HEIGHT - (center / 2)
 
-    def update_images(self):
-        font = pygame.font.SysFont(MAIN_FONT, FONT_SIZE, bold=True)
+    def draw_definition(self, screen, font):
         self.images, self.rects = [], []
         for wd in range(len(self.wrapped_definition)):
             image = font.render(self.wrapped_definition[wd].upper(), True, BLACK)
@@ -92,15 +90,12 @@ class Definition:
                 )
             )
             self.rects.append(rect)
-
-    def draw_text(self, screen):
-        self.update_images()
         for i in range(len(self.wrapped_definition)):
             screen.blit(self.images[i], self.rects[i])
 
     def draw_seperator(self, screen):
         is_upper_location = getattr(
-            get_arrowed_definitions(self.definition_type), "upper_location"
+            get_arrowed_place_holder(self.definition_type), "upper_location"
         )
         if self.linked_definition is not None and is_upper_location:
             center_case = self.calculate_center(
@@ -138,20 +133,3 @@ class Definition:
         }
 
 
-def save_definitions_to_json(
-    definitions: list[Definition], score: int, map_file: str, filled_map_file=None
-) -> None:
-    filled_map_file = (
-        filled_map_file or f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{score}"
-    )
-    data_to_export = {
-        "map_file": map_file,
-        "score": score,
-        "date": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
-        "definitions": [d.export_to_dict() for d in definitions],
-    }
-    with open(
-        f"resources/filled_maps/{filled_map_file}.json",
-        "w",
-    ) as f:
-        json.dump(data_to_export, f)

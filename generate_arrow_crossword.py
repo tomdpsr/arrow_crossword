@@ -6,8 +6,9 @@ from random import shuffle
 import pandas as pd
 import pygame
 
-from utilities.arrowed_definitions import get_arrowed_definition_mapping
-from utilities.definition import Definition, save_definitions_to_json
+from utilities.arrowed_place_holder.arrowed_place_holder import get_arrowed_place_holder
+from utilities.definition.definition import Definition
+from utilities.definition.utilities import save_definitions_to_json
 
 THRESHOLD = 10
 
@@ -24,15 +25,13 @@ def update_definitions_from_game_state(
     definitions: list[Definition], df_game_state: list[list[str]], gros_dico: dict
 ) -> list[Definition]:
     for definition in definitions:
-        mapp_i_diff = get_arrowed_definition_mapping("i_diff")
-        mapp_j_diff = get_arrowed_definition_mapping("j_diff")
-        mapp_is_horizontal = get_arrowed_definition_mapping("is_horizontal")
+        arrowed_place_holder = get_arrowed_place_holder(definition.definition_type)
         letters = ""
-        i = definition.i + mapp_i_diff[definition.definition_type]
-        j = definition.j + mapp_j_diff[definition.definition_type]
+        i = definition.i + arrowed_place_holder.i_diff
+        j = definition.j + arrowed_place_holder.j_diff
         while not (df_game_state[i][j].isnumeric()):
             letters += df_game_state[i][j]
-            if mapp_is_horizontal[definition.definition_type]:
+            if  arrowed_place_holder.is_horizontal:
                 j += 1
             else:
                 i += 1
@@ -58,14 +57,12 @@ def update_definitions_from_game_state(
 def set_letters(
     definition: Definition, df_game_state: list[list[str]]
 ) -> list[list[str]]:
-    mapp_i_diff = get_arrowed_definition_mapping("i_diff")
-    mapp_j_diff = get_arrowed_definition_mapping("j_diff")
-    mapp_is_horizontal = get_arrowed_definition_mapping("is_horizontal")
-    i = definition.i + mapp_i_diff[definition.definition_type]
-    j = definition.j + mapp_j_diff[definition.definition_type]
+    arrowed_place_holder = get_arrowed_place_holder(definition.definition_type)
+    i = definition.i + arrowed_place_holder.i_diff
+    j = definition.j + arrowed_place_holder.j_diff
     for l in definition.word:
         df_game_state[i][j] = l
-        if mapp_is_horizontal[definition.definition_type]:
+        if arrowed_place_holder.is_horizontal:
             j += 1
         else:
             i += 1
@@ -162,11 +159,11 @@ def generate_arrow_crossword(dict_folder: str, map_file: str):
     print(df_test)
     print("DEFINITIONS ; ")
     score = 0
-    ma = get_arrowed_definition_mapping("unicode_char")
     for d in definitions:
         # EN ATTENDANT
         d.definition = d.word
-        print(f"({d.i},{d.j}, {ma[d.definition_type]}) : {d.word}")
+        arrowed_place_holder = get_arrowed_place_holder(d.definition_type)
+        print(f"({d.i},{d.j}, {arrowed_place_holder.unicode_char}) : {d.word}")
         if d.word in gros_dico["perso"][len(d.word)]:
             score += 1
     score = int(score / len(definitions) * 100)
