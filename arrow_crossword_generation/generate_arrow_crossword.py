@@ -2,7 +2,6 @@ import pandas as pd
 import pygame
 from loguru import logger
 
-from arrow_crossword_generation.enrich_mystery_capelito import get_mystery_capelito
 from arrow_crossword_generation.utilities.constants import (
     THRESHOLD,
     DICTIONARY,
@@ -12,22 +11,21 @@ from arrow_crossword_generation.utilities.generation_utilities import (
     update_capelitos_from_game_state,
     update_possible_values,
     check_number_capelito_is_set,
-    clean_custom_possibles_words,
 )
 from arrow_crossword_generation.utilities.init_utilities import (
     init_all_dictionaries,
     get_validated_custom_words,
     init_state,
 )
-from arrow_crossword_generation.utilities.post_generation_utilities import (
-    enrich_custom_capelitos, enrich_non_custom_capelitos, enrich_forbidden_dictionary,
+from arrow_crossword_generation.utilities.post_generation_utilities import ( enrich_forbidden_dictionary,
 )
-from shared_utilities.capelito.utilities import save_capelitos_to_json
+from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
 
 
 def generate_arrow_crossword(dictionary: str, map_file: str):
     pygame.init()
     validated_custom_words = get_validated_custom_words()
+    arrow_crossword = ArrowCrossword(map_file=map_file)
 
     df_init = pd.read_csv(
         f"resources/maps/{map_file}.csv", dtype=object, sep=",", header=None
@@ -84,32 +82,12 @@ def generate_arrow_crossword(dictionary: str, map_file: str):
     df_all_capelitos = pd.DataFrame(df_game_state)
 
     if check_number_capelito_is_set(all_capelitos, len(all_capelitos)):
-        # get mystery_capelito
-        possible_mystery_capelitos = [
-            w for ws in all_dictionaries[DICTIONARY.CUSTOM_DICTIONARY].values() for w in ws
-        ]
-        possible_mystery_capelitos = clean_custom_possibles_words(
-            possible_mystery_capelitos, all_capelitos, validated_custom_words
-        )
-        mystery_capelito = get_mystery_capelito(df_game_state, possible_mystery_capelitos)
-
-
-        # Enrich capelitos
-        logger.info('Enrich capelitos')
-        all_capelitos, score, mystery_capelito_definition = enrich_custom_capelitos(all_capelitos, mystery_capelito['word'])
-        all_capelitos = enrich_non_custom_capelitos(all_capelitos)
-
-        if mystery_capelito_definition:
-            mystery_capelito['definition'] = mystery_capelito_definition
         logger.info(df_all_capelitos)
-        logger.info(f"Final Score : {score}")
-        logger.info(f"Mystery Capelito : {mystery_capelito['word']}")
-        save_capelitos_to_json(
-            capelitos=all_capelitos,
-            score=score,
-            map_file=map_file,
-            mystery_capelito=mystery_capelito,
-        )
+        arrow_crossword.capelitos = all_capelitos
+        arrow_crossword.game_state = df_game_state
+        logger.info("End generation of arrow crossword")
+
     else:
         logger.info("NOT ENOUGH")
     enrich_forbidden_dictionary(all_dictionaries[DICTIONARY.FORBIDDEN_DICTIONARY])
+    return arrow_crossword

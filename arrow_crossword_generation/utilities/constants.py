@@ -22,7 +22,7 @@ DICTIONARY_TO_PATH = {
 }
 
 THRESHOLD = 100
-NB_CUSTOM_capelitoS_MIN = 0
+NB_CUSTOM_CAPELITOS_MIN = 1
 
 
 letter_to_score = {

@@ -4,7 +4,7 @@ from random import shuffle
 from loguru import logger
 
 from arrow_crossword_generation.utilities.constants import (
-    NB_CUSTOM_capelitoS_MIN,
+    NB_CUSTOM_CAPELITOS_MIN,
     DICTIONARY,
 )
 from shared_utilities.arrowed_place_holder.arrowed_place_holder import (
@@ -17,7 +17,7 @@ def shuffle_capelitos(capelitos: list[Capelito]) -> list[Capelito]:
     # We only keep min 3 length words
     custom_capelitos = [d for d in capelitos if len(d.word) > 2]
     shuffle(custom_capelitos)
-    custom_capelitos = custom_capelitos[:NB_CUSTOM_capelitoS_MIN]
+    custom_capelitos = custom_capelitos[:NB_CUSTOM_CAPELITOS_MIN]
 
     capelitos = [d for d in capelitos if d not in custom_capelitos]
     capelitos = sorted(capelitos, key=lambda x: len(x.word), reverse=True)
@@ -64,7 +64,7 @@ def update_possible_values(
     every_capelito_has_solution = True
     for capelito in capelitos:
         cursor += 1
-        should_be_custom = (cursor <= NB_CUSTOM_capelitoS_MIN)
+        should_be_custom = (cursor <= NB_CUSTOM_CAPELITOS_MIN)
         if capelito.word in all_dictionaries[DICTIONARY.FORBIDDEN_DICTIONARY][len(capelito.word)] and not should_be_custom:
             every_capelito_has_solution = False
             break

@@ -10,7 +10,7 @@ def save_capelitos_to_json(
     map_file: str,
     capelito_file=None,
     mystery_capelito=None,
-) -> None:
+) -> dict:
     capelito_file = (
         capelito_file
         or f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{map_file}_{score}"
@@ -27,6 +27,14 @@ def save_capelitos_to_json(
         "w",
     ) as f:
         json.dump(data_to_export, f)
+    return data_to_export
+
+
+def init_arrow_crossword_from_file(arrow_crossword_filename: str) -> list:
+    f = open(f"data/capelitos/{arrow_crossword_filename}.json")
+    arrow_crossword = json.load(f)
+    arrow_crossword['capelitos'] = init_capelitos(arrow_crossword)
+    return arrow_crossword
 
 
 def init_capelitos(filled_map_json) -> list[Capelito]:
