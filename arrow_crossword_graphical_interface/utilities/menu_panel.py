@@ -51,11 +51,11 @@ class MenuPanel:
     def draw_letter_button(self, font):
         return self.draw_button("LETTERS", self.width - 200, 20, font)
 
-    def draw_text_editing(self, last_definition, text_filler, font):
+    def draw_text_editing(self, last_capelito, text_filler, font):
         self.subsurface.blit(font.render("Nouvelle définition", True, WHITE), (110, 20))
-        if last_definition:
+        if last_capelito:
             self.subsurface.blit(
-                font.render(f"Mot : [{last_definition.word}]", True, WHITE), (110, 35)
+                font.render(f"Mot : [{last_capelito.word}]", True, WHITE), (110, 35)
             )
         self.subsurface.blit(font.render("->", True, WHITE), (110, 50))
         self.subsurface.blit(font.render(text_filler, True, WHITE), (125, 50))

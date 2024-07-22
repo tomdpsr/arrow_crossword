@@ -17,9 +17,9 @@ from arrow_crossword_generation.utilities.generation_utilities import (
 from arrow_crossword_generation.utilities.init_utilities import (
     get_validated_custom_words,
 )
-from shared_utilities.definition.utilities import (
-    save_definitions_to_json,
-    init_definitions,
+from shared_utilities.capelito.utilities import (
+    save_capelitos_to_json,
+    init_capelitos,
 )
 
 MysteryLetter = namedtuple(
@@ -63,7 +63,7 @@ def sort_dict_by_unused_words(magazine_letters, word_letters):
         value.sort(key=lambda x: (x.i in i_already_used) or (x.j in j_already_used), reverse=True)
     return magazine_letters
 
-def get_mystery_word(df_game_state, custom_possible_words) -> dict:
+def get_mystery_capelito(df_game_state, custom_possible_words) -> dict:
     letters = []
     for i in range(len(df_game_state)):
         for j in range(len(df_game_state[i])):
@@ -83,16 +83,16 @@ def get_mystery_word(df_game_state, custom_possible_words) -> dict:
     return custom_word_to_export
 
 
-def enrich_mystery_word(definition_filename: str):
-    f = open(f"data/definitions/{definition_filename}.json")
+def enrich_mystery_capelito(capelito_filename: str):
+    f = open(f"data/capelitos/{capelito_filename}.json")
     filled_map_json = json.load(f)
-    definitions = init_definitions(filled_map_json)
+    capelitos = init_capelitos(filled_map_json)
     df_map = pd.read_csv(
         f"resources/maps/{filled_map_json["map_file"]}.csv", header=None, sep=","
     )
     df_game_state = df_map.values.tolist()
-    for definition in definitions:
-        df_game_state = set_letters(definition, df_game_state)
+    for capelito in capelitos:
+        df_game_state = set_letters(capelito, df_game_state)
 
     validated_custom_words = get_validated_custom_words()
 
@@ -104,17 +104,15 @@ def enrich_mystery_word(definition_filename: str):
     custom_possible_words = df_words_file["word"].to_list()
 
     custom_possible_words = clean_custom_possibles_words(
-        custom_possible_words, definitions, validated_custom_words
+        custom_possible_words, capelitos, validated_custom_words
     )
 
-    custom_word_to_export = get_mystery_word(df_game_state, custom_possible_words)
+    custom_word_to_export = get_mystery_capelito(df_game_state, custom_possible_words)
 
-    print(custom_word_to_export)
-
-    save_definitions_to_json(
-        definitions=definitions,
+    save_capelitos_to_json(
+        capelitos=capelitos,
         score=filled_map_json["score"],
         map_file=filled_map_json["map_file"],
-        definition_file=definition_filename,
-        mystery_word=custom_word_to_export,
+        capelito_file=capelito_filename,
+        mystery_capelito=custom_word_to_export,
     )

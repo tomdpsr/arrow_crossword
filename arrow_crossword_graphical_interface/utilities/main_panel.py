@@ -18,7 +18,7 @@ from shared_utilities.arrowed_place_holder.arrowed_place_holder import (
 
 
 class MainPanel:
-    def __init__(self, screen, width, height, mystery_word):
+    def __init__(self, screen, width, height, mystery_capelito):
         self.main_surface = screen.subsurface(0, 0, width, height)
         self.subsurface = self.main_surface.subsurface(
             0, PANEL_MYSTERY_WORD_HEIGHT, width, height - PANEL_MYSTERY_WORD_HEIGHT
@@ -27,8 +27,8 @@ class MainPanel:
         self.mystery_subsurface = self.main_surface.subsurface(
             0, 0, width, PANEL_MYSTERY_WORD_HEIGHT
         )
-        if mystery_word:
-            self.mystery_word = mystery_word
+        if mystery_capelito:
+            self.mystery_capelito = mystery_capelito
 
     def draw_grid(self, df_map, base_color):
         # Draw the grid
@@ -63,8 +63,8 @@ class MainPanel:
 
     def draw_grid_numbers(self, font):
         # Draw the grid
-        for letter in range(len(self.mystery_word["word_letters"])):
-            (_, i, j) = self.mystery_word["word_letters"][letter]
+        for letter in range(len(self.mystery_capelito["word_letters"])):
+            (_, i, j) = self.mystery_capelito["word_letters"][letter]
             letter_number = font.render(f"{letter + 1}", True, BLACK)
             rect = letter_number.get_rect(
                 topright=(
@@ -116,19 +116,19 @@ class MainPanel:
                             ),
                         )
 
-    def draw_definitions(
-        self, definitions, definition_font, definition_font_italic, letter_font, with_definition_letters: bool
+    def draw_capelitos(
+        self, capelitos, capelito_font, capelito_font_italic, letter_font, with_capelito_letters: bool
     ):
         # Draw the arrows
-        for d in definitions:
-            d.draw_definition(self.subsurface, definition_font, definition_font_italic)
+        for d in capelitos:
+            d.draw_capelito(self.subsurface, capelito_font, capelito_font_italic)
             d.draw_seperator(self.subsurface)
-            if with_definition_letters:
-                d.draw_definition_letters(self.subsurface, letter_font)
+            if with_capelito_letters:
+                d.draw_capelito_letters(self.subsurface, letter_font)
 
-    def draw_mystery_word_boxes(self, font):
+    def draw_mystery_capelito_boxes(self, font):
         # Draw the arrows
-        for i in range(len(self.mystery_word["word_letters"])):
+        for i in range(len(self.mystery_capelito["word_letters"])):
             pygame.draw.rect(
                 self.mystery_subsurface,
                 BLACK,
@@ -141,7 +141,7 @@ class MainPanel:
                 MARGIN,
             )
             letter_number = font.render(
-                f"{len(self.mystery_word['word_letters'])-i}", True, BLACK
+                f"{len(self.mystery_capelito['word_letters'])-i}", True, BLACK
             )
             rect = letter_number.get_rect(
                 topright=(
@@ -151,14 +151,14 @@ class MainPanel:
             )
             self.mystery_subsurface.blit(letter_number, rect)
 
-    def draw_mystery_definition(self, font):
+    def draw_mystery_capelito(self, font):
         # Draw the arrows
-        letter_number = font.render(self.mystery_word["definition"].upper(), True, BLACK)
-        mystery_definition_rect = letter_number.get_rect(
+        letter_number = font.render(self.mystery_capelito["definition"].upper(), True, BLACK)
+        mystery_capelito_rect = letter_number.get_rect(
             bottomright=(
                 self.width - MARGIN*2,
                 PANEL_MYSTERY_WORD_HEIGHT - (MARGIN * 15 + MYSTERY_BOX_WIDTH),
             ),
         )
-        self.mystery_subsurface.blit(letter_number, mystery_definition_rect)
-        return mystery_definition_rect
+        self.mystery_subsurface.blit(letter_number, mystery_capelito_rect)
+        return mystery_capelito_rect

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "arrow-crossword"
+version = "0.1.0"
+description = "Create your own swedish style arrow crosswords"
+authors = ["Tom Dupisre <tom.dupisre@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12.3"
+pandas = "^2.2.2"
+click = "^8.1.7"
+black = "^24.4.2"
+pygame = "^2.5.2"
+openai = "^1.35.4"
+loguru = "^0.7.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -18,11 +18,11 @@ from shared_utilities.arrowed_place_holder.arrowed_place_holder import (
 
 
 @dataclass
-class Definition:
-    definition_type: str
+class Capelito:
+    capelito_type: str
     i: int
     j: int
-    is_custom_definition: bool = False
+    is_custom_capelito: bool = False
     arrowed_place_holder: ArrowedPlaceHolder = None
     word: str = ""
     previous_word: str = ""
@@ -30,31 +30,31 @@ class Definition:
     possible_values = []
     nb_tries: int = 0
     definition: str = ""
-    wrapped_definition = None
-    linked_definition = None
+    wrapped_capelito = None
+    linked_capelito = None
     rects = []
 
     def __eq__(self, other):
         return (
             self.i == other.i
             and self.j == other.j
-            and self.definition_type == other.definition_type
+            and self.capelito_type == other.capelito_type
         )
 
     def __hash__(self):
-        return hash((self.i, self.j, self.definition_type))
+        return hash((self.i, self.j, self.capelito_type))
 
     def __post_init__(self):
         self.update_definition(self.definition)
-        self.arrowed_place_holder = get_arrowed_place_holder(self.definition_type)
+        self.arrowed_place_holder = get_arrowed_place_holder(self.capelito_type)
 
     def update_definition(self, new_definition):
         self.definition = new_definition
-        wrapped_definition = textwrap.wrap(self.definition, width=11, max_lines=3)
-        for index, w in enumerate(wrapped_definition[1:]):
+        wrapped_capelito = textwrap.wrap(self.definition, width=11, max_lines=3)
+        for index, w in enumerate(wrapped_capelito[1:]):
             if f" {w}" not in self.definition:
-                wrapped_definition[index + 1] = "-" + wrapped_definition[index + 1]
-        self.wrapped_definition = wrapped_definition
+                wrapped_capelito[index + 1] = "-" + wrapped_capelito[index + 1]
+        self.wrapped_capelito = wrapped_capelito
 
     @staticmethod
     def calculate_diff(iterate: int, nb_values: int, center_case):
@@ -75,7 +75,8 @@ class Definition:
                 diff_j = center_case + DEFINITION_FONT_SIZE
         return diff_j
 
-    def calculate_center(self, self_nb_values: int, linked_nb_values: int):
+    @staticmethod
+    def calculate_center(self_nb_values: int, linked_nb_values: int):
         return self_nb_values * HEIGHT / (self_nb_values + linked_nb_values)
 
     def calculate_center_subdivision(self, self_nb_values: int, linked_nb_values: int):
@@ -86,22 +87,22 @@ class Definition:
         else:
             return HEIGHT - (center / 2)
 
-    def draw_definition(self, screen, font, font_italic):
+    def draw_capelito(self, screen, font, font_italic):
         images, self.rects = [], []
-        for wd in range(len(self.wrapped_definition)):
-            if self.is_custom_definition:
-                image = font_italic.render(self.wrapped_definition[wd].upper(), True, BLACK)
+        for wd in range(len(self.wrapped_capelito)):
+            if self.is_custom_capelito:
+                image = font_italic.render(self.wrapped_capelito[wd].upper(), True, BLACK)
             else:
-                image = font.render(self.wrapped_definition[wd].upper(), True, BLACK)
+                image = font.render(self.wrapped_capelito[wd].upper(), True, BLACK)
             images.append(image)
-            if self.linked_definition is not None:
+            if self.linked_capelito is not None:
                 center_case = self.calculate_center_subdivision(
-                    len(self.wrapped_definition),
-                    len(self.linked_definition.wrapped_definition),
+                    len(self.wrapped_capelito),
+                    len(self.linked_capelito.wrapped_capelito),
                 )
             else:
                 center_case = HEIGHT / 2
-            diff_j = self.calculate_diff(wd, len(self.wrapped_definition), center_case)
+            diff_j = self.calculate_diff(wd, len(self.wrapped_capelito), center_case)
             rect = image.get_rect(
                 center=(
                     ((MARGIN + WIDTH) * self.j + MARGIN + WIDTH / 2),
@@ -109,14 +110,14 @@ class Definition:
                 )
             )
             self.rects.append(rect)
-        for i in range(len(self.wrapped_definition)):
+        for i in range(len(self.wrapped_capelito)):
             screen.blit(images[i], self.rects[i])
 
         # Redraw rect for mystery diff
         for r in range(len(self.rects)):
             self.rects[r] = self.rects[r].move(0, PANEL_MYSTERY_WORD_HEIGHT)
 
-    def draw_definition_letters(self, screen, font):
+    def draw_capelito_letters(self, screen, font):
         letter_i = self.i + self.arrowed_place_holder.i_diff
         letter_j = self.j + self.arrowed_place_holder.j_diff
         for l in self.word:
@@ -135,12 +136,12 @@ class Definition:
 
     def draw_seperator(self, screen):
         if (
-            self.linked_definition is not None
+            self.linked_capelito is not None
             and self.arrowed_place_holder.upper_location
         ):
             center_case = self.calculate_center(
-                len(self.wrapped_definition),
-                len(self.linked_definition.wrapped_definition),
+                len(self.wrapped_capelito),
+                len(self.linked_capelito.wrapped_capelito),
             )
 
             pygame.draw.line(
@@ -165,10 +166,10 @@ class Definition:
 
     def export_to_dict(self) -> dict:
         return {
-            "definition_type": self.definition_type,
+            "capelito_type": self.capelito_type,
             "i": self.i,
             "j": self.j,
             "word": self.word,
             "definition": self.definition,
-            "is_custom_definition": self.is_custom_definition,
+            "is_custom_capelito": self.is_custom_capelito,
         }

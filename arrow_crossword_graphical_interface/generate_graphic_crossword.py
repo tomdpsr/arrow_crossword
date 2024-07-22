@@ -20,19 +20,19 @@ from arrow_crossword_graphical_interface.utilities.constants import (
 )
 from arrow_crossword_graphical_interface.utilities.main_panel import MainPanel
 from arrow_crossword_graphical_interface.utilities.menu_panel import MenuPanel
-from shared_utilities.definition.utilities import (
-    save_definitions_to_json,
-    init_definitions,
+from shared_utilities.capelito.utilities import (
+    save_capelitos_to_json,
+    init_capelitos,
 )
 
 
-def generate_graphic_crossword(definitions_file: str):
+def generate_graphic_crossword(capelitos_file: str):
     # Initialize pygame
     pygame.init()
 
-    f = open(f"data/validated_definitions/{definitions_file.replace('.json', '')}.json")
+    f = open(f"data/validated_capelitos/{capelitos_file.replace('.json', '')}.json")
     filled_map_json = json.load(f)
-    all_definitions = init_definitions(filled_map_json)
+    all_capelitos = init_capelitos(filled_map_json)
 
     df_map = pd.read_csv(
         f"resources/maps/{filled_map_json["map_file"]}.csv", header=None, sep=","
@@ -54,7 +54,7 @@ def generate_graphic_crossword(definitions_file: str):
         screen,
         WINDOW_WIDTH,
         WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT,
-        mystery_word=filled_map_json["mystery_word"],
+        mystery_capelito=filled_map_json["mystery_capelito"],
     )
     menu_sub_surface = MenuPanel(
         screen, WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT, WINDOW_WIDTH
@@ -68,14 +68,14 @@ def generate_graphic_crossword(definitions_file: str):
 
     text_editing = None
     with_letters = False
-    last_definition = None
+    last_capelito = None
     text_filler = ""
     screen.fill(BLACK)
 
     # Fonts
     menu_font = pygame.font.Font(MAIN_FONT_PATH, MENU_FONT_SIZE)
-    definition_font = pygame.font.Font(MAIN_FONT_PATH, DEFINITION_FONT_SIZE)
-    definition_font_italic = pygame.font.Font(ITALIC_FONT_PATH, DEFINITION_FONT_SIZE)
+    capelito_font = pygame.font.Font(MAIN_FONT_PATH, DEFINITION_FONT_SIZE)
+    capelito_font_italic = pygame.font.Font(ITALIC_FONT_PATH, DEFINITION_FONT_SIZE)
     mystery_font = pygame.font.Font(MAIN_FONT_PATH, MYSTERY_FONT_SIZE)
     letter_font = pygame.font.Font(MAIN_FONT_PATH, LETTER_FONT_SIZE)
 
@@ -100,36 +100,35 @@ def generate_graphic_crossword(definitions_file: str):
         screen_rect = menu_sub_surface.draw_screen_button(menu_font)
         letter_rect = menu_sub_surface.draw_letter_button(menu_font)
         game_sub_surface.draw_arrow(df_map, color_arrow)
-        game_sub_surface.draw_definitions(
-            all_definitions, definition_font, definition_font_italic, letter_font, with_letters
+        game_sub_surface.draw_capelitos(
+            all_capelitos, capelito_font, capelito_font_italic, letter_font, with_letters
         )
-        game_sub_surface.draw_mystery_word_boxes(definition_font)
-        mystery_definition_rect = game_sub_surface.draw_mystery_definition(
+        game_sub_surface.draw_mystery_capelito_boxes(capelito_font)
+        mystery_capelito_rect = game_sub_surface.draw_mystery_capelito(
             mystery_font
         )
-        game_sub_surface.draw_grid_numbers(definition_font)
+        game_sub_surface.draw_grid_numbers(capelito_font)
         if text_editing:
-            menu_sub_surface.draw_text_editing(last_definition, text_filler, menu_font)
+            menu_sub_surface.draw_text_editing(last_capelito, text_filler, menu_font)
 
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not text_editing:
-                    for definition in all_definitions:
-                        if definition.is_clicked(event.pos):
-                            text_editing = TEXT_EDITING.WORD_DEFINITION
-                            last_definition = definition
-                            print(definition.definition)
-                    if mystery_definition_rect.collidepoint(event.pos):
-                        text_editing = TEXT_EDITING.MYSTERY_DEFINITION
+                    for capelito in all_capelitos:
+                        if capelito.is_clicked(event.pos):
+                            text_editing = TEXT_EDITING.WORD_capelito
+                            last_capelito = capelito
+                    if mystery_capelito_rect.collidepoint(event.pos):
+                        text_editing = TEXT_EDITING.MYSTERY_capelito
                 if save_rect.collidepoint(event.pos):
-                    save_definitions_to_json(
-                        definitions=all_definitions,
+                    save_capelitos_to_json(
+                        capelitos=all_capelitos,
                         score=filled_map_json["score"],
                         map_file=filled_map_json["map_file"],
-                        definition_file=definitions_file,
-                        mystery_word=filled_map_json["mystery_word"],
+                        capelito_file=capelitos_file,
+                        mystery_capelito=filled_map_json["mystery_capelito"],
                     )
                 if screen_rect.collidepoint(event.pos):
                     if with_letters:
@@ -141,7 +140,7 @@ def generate_graphic_crossword(definitions_file: str):
 
                     pygame.image.save(
                         surface_to_screen,
-                        f"data/screen/export{definitions_file}_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}{suffix}.png",
+                        f"data/screen/export{capelitos_file}_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}{suffix}.png",
                     )
                 if letter_rect.collidepoint(event.pos):
                     with_letters = not with_letters
@@ -151,12 +150,12 @@ def generate_graphic_crossword(definitions_file: str):
                 if event.key == pygame.K_BACKSPACE:
                     text_filler = text_filler[:-1]
                 if event.key == pygame.K_RETURN:
-                    if text_editing == TEXT_EDITING.WORD_DEFINITION:
-                        for d in all_definitions:
-                            if getattr(d, "word") == getattr(last_definition, "word"):
-                                d.update_definition(text_filler)
-                    if text_editing == TEXT_EDITING.MYSTERY_DEFINITION:
-                        game_sub_surface.mystery_word["definition"] = text_filler
+                    if text_editing == TEXT_EDITING.WORD_capelito:
+                        for d in all_capelitos:
+                            if getattr(d, "word") == getattr(last_capelito, "word"):
+                                d.update_capelito(text_filler)
+                    if text_editing == TEXT_EDITING.MYSTERY_capelito:
+                        game_sub_surface.mystery_capelito["capelito"] = text_filler
                     text_editing = None
                     text_filler = ""
                 if event.key == pygame.K_ESCAPE:

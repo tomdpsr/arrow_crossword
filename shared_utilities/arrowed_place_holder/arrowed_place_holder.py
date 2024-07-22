@@ -3,7 +3,7 @@ from collections import namedtuple
 ArrowedPlaceHolder = namedtuple(
     "ArrowedPlaceHolder",
     [
-        "definition_type",
+        "capelito_type",
         "i_diff",
         "j_diff",
         "is_horizontal",
@@ -14,7 +14,7 @@ ArrowedPlaceHolder = namedtuple(
 
 ArrowedPlaceHolders = [
     ArrowedPlaceHolder(
-        definition_type="1",
+        capelito_type="1",
         i_diff=0,
         j_diff=1,
         is_horizontal=True,
@@ -22,7 +22,7 @@ ArrowedPlaceHolders = [
         upper_location=True,
     ),
     ArrowedPlaceHolder(
-        definition_type="2",
+        capelito_type="2",
         i_diff=1,
         j_diff=0,
         is_horizontal=False,
@@ -30,7 +30,7 @@ ArrowedPlaceHolders = [
         upper_location=False,
     ),
     ArrowedPlaceHolder(
-        definition_type="3",
+        capelito_type="3",
         i_diff=0,
         j_diff=1,
         is_horizontal=False,
@@ -38,7 +38,7 @@ ArrowedPlaceHolders = [
         upper_location=True,
     ),
     ArrowedPlaceHolder(
-        definition_type="4",
+        capelito_type="4",
         i_diff=0,
         j_diff=-1,
         is_horizontal=False,
@@ -46,7 +46,7 @@ ArrowedPlaceHolders = [
         upper_location=True,
     ),
     ArrowedPlaceHolder(
-        definition_type="5",
+        capelito_type="5",
         i_diff=-1,
         j_diff=0,
         is_horizontal=True,
@@ -54,7 +54,7 @@ ArrowedPlaceHolders = [
         upper_location=False,
     ),
     ArrowedPlaceHolder(
-        definition_type="6",
+        capelito_type="6",
         i_diff=1,
         j_diff=0,
         is_horizontal=True,
@@ -64,9 +64,9 @@ ArrowedPlaceHolders = [
 ]
 
 
-def get_arrowed_place_holder(definition_type: str) -> ArrowedPlaceHolder:
+def get_arrowed_place_holder(capelito_type: str) -> ArrowedPlaceHolder:
     return next(
         x
         for x in ArrowedPlaceHolders
-        if getattr(x, "definition_type") == definition_type
+        if getattr(x, "capelito_type") == capelito_type
     )
