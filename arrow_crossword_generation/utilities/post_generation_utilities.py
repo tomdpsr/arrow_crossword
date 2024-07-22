@@ -8,39 +8,37 @@ from arrow_crossword_generation.utilities.constants import (
     DICTIONARY_TO_PATH,
     DICTIONARY,
 )
+from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
 from shared_utilities.arrowed_place_holder.arrowed_place_holder import get_arrowed_place_holder
 from shared_utilities.capelito.capelito import Capelito
 
 
-def enrich_custom_capelitos(
-    capelitos: list[Capelito],
-    mystery_capelito_word: str
-) -> tuple[list[Capelito], int, str]:
-    score = 0
+def find_and_enrich_custom_capelitos(
+    arrow_crossword: ArrowCrossword,
+) -> ArrowCrossword:
+    arrow_crossword.score = 0
     df_custom_dictionary = pd.read_csv(
         f"{DICTIONARY_TO_PATH[DICTIONARY.CUSTOM_DICTIONARY]}/{DICTIONARY.CUSTOM_DICTIONARY}.csv",
         dtype=object,
     )
     custom_capelito_dictionary = dict(df_custom_dictionary.values)
-    for d in capelitos:
+    for c in arrow_crossword.capelitos:
         custom_char = ''
-        if d.word in custom_capelito_dictionary:
-            if not pd.isna(custom_capelito_dictionary[d.word]):
-                d.capelito = custom_capelito_dictionary[d.word] or d.capelito
-            d.is_custom_capelito = True
-            score += 1
+        if c.word in custom_capelito_dictionary:
+            if not pd.isna(custom_capelito_dictionary[c.word]):
+                c.definition = custom_capelito_dictionary[c.word] or c.word
+            c.is_custom_capelito = True
+            arrow_crossword.score += 1
             custom_char = '###'
-        # PLACEHOLDER
-        d.capelito = d.word
-        arrowed_place_holder = get_arrowed_place_holder(d.capelito_type)
-        logger.info(f"{custom_char}({d.i},{d.j}, {arrowed_place_holder.unicode_char}) : {d.word}")
+
+        arrowed_place_holder = get_arrowed_place_holder(c.capelito_type)
+        logger.debug(f"{custom_char}({c.i},{c.j}, {arrowed_place_holder.unicode_char}) : {c.word}")
 
     # mystery word
-    mystery_capelito_definition = None
-    if mystery_capelito_word:
-        if not pd.isna(custom_capelito_dictionary[mystery_capelito_word]):
-            mystery_capelito_definition = custom_capelito_dictionary[mystery_capelito_word] or mystery_capelito_word
-    return capelitos, score, mystery_capelito_definition
+    if arrow_crossword.mystery_capelito:
+        if not pd.isna(custom_capelito_dictionary[arrow_crossword.mystery_capelito['word']]):
+            arrow_crossword.mystery_capelito['definition'] = custom_capelito_dictionary[arrow_crossword.mystery_capelito['word']] or arrow_crossword.mystery_capelito['word']
+    return arrow_crossword
 
 
 def enrich_forbidden_dictionary(forbidden_dictionary: dict):
@@ -73,14 +71,15 @@ def get_open_ai_dictionaries(words):
     return capelito_dictionary
 
 
-def enrich_non_custom_capelitos(capelitos: list[Capelito]) -> list[Capelito]:
-    word_to_retrieve_capelito = [d.word for d in capelitos if not d.is_custom_capelito]
+def enrich_non_custom_capelitos(arrow_crossword: ArrowCrossword) -> ArrowCrossword:
+
+    word_to_retrieve_capelito = [d.word for d in arrow_crossword.capelitos if not d.is_custom_capelito]
     capelito_dictionary = get_open_ai_dictionaries(word_to_retrieve_capelito)
 
-    for d in capelitos:
+    for d in arrow_crossword.capelitos:
         if d.word in capelito_dictionary:
-            d.capelito = capelito_dictionary[d.word]
+            d.definition = capelito_dictionary[d.word]
 
-    return capelitos
+    return arrow_crossword
 
 
