@@ -17,7 +17,6 @@ class GenerateArrowCrossword(object):
     arrow_crossword = None
 
     def __init__(self, arrow_crossword_filename=None):
-        print(arrow_crossword_filename)
         self.arrow_crossword = ArrowCrossword(filename=arrow_crossword_filename)
 
     def generate_arrow_crosswords(self, dictionary, map_file):
@@ -29,16 +28,18 @@ class GenerateArrowCrossword(object):
         self.arrow_crossword.save_arrow_crossword_to_json()
 
     def enrich_arrow_crossword_definitions(self):
-        enrich_arrow_crossword_definition(self.arrow_crossword)
+        self.arrow_crossword = enrich_arrow_crossword_definition(self.arrow_crossword)
         self.arrow_crossword.save_arrow_crossword_to_json()
+
+    def generate_graphic_crossword(self):
+        generate_graphic_crossword(self.arrow_crossword)
+
 
     def generate_and_enrich(self, dictionary=DICTIONARY.FRENCH_DICTIONARY, map_file='map_xs'):
         self.generate_arrow_crosswords(dictionary, map_file)
         self.enrich_mystery_capelitos()
         self.enrich_arrow_crossword_definitions()
-
-    def generate_graphic_crosswords(self):
-        generate_graphic_crossword(self.arrow_crossword)
+        self.generate_graphic_crossword()
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 import textwrap
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import pygame
 

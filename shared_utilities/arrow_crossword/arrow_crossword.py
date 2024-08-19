@@ -30,11 +30,11 @@ class ArrowCrossword:
                 ))
 
             # Sorry for the n square
-            for d in all_capelitos:
-                if d.linked_capelito is None:
-                    for d2 in all_capelitos:
-                        if d.i == d2.i and d.j == d2.j and d.word != d2.word:
-                            d.linked_capelito, d2.linked_capelito = d2, d
+            for c in all_capelitos:
+                if c.linked_capelito is None:
+                    for c2 in all_capelitos:
+                        if c.i == c2.i and c.j == c2.j and c.capelito_type != c2.capelito_type:
+                            c.linked_capelito, c2.linked_capelito = c2, c
             self.capelitos = all_capelitos
 
             # Sorry for the ?
@@ -44,8 +44,6 @@ class ArrowCrossword:
             self.mystery_capelito = arrow_crossword['mystery_capelito']
             self.game_state = arrow_crossword['game_state']
 
-            # useful to return ?
-            return arrow_crossword
 
     def save_arrow_crossword_to_json(
         self,

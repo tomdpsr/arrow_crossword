@@ -1,7 +1,6 @@
 import datetime
 import json
 
-import pandas as pd
 import pygame
 
 from arrow_crossword_graphical_interface.utilities.constants import (
@@ -21,10 +20,6 @@ from arrow_crossword_graphical_interface.utilities.constants import (
 from arrow_crossword_graphical_interface.utilities.main_panel import MainPanel
 from arrow_crossword_graphical_interface.utilities.menu_panel import MenuPanel
 from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
-from shared_utilities.capelito.utilities import (
-    save_capelitos_to_json,
-    init_capelitos,
-)
 
 
 def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
@@ -43,13 +38,13 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
 
     # Surface
     game_sub_surface = MainPanel(
-        screen,
-        WINDOW_WIDTH,
-        WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT,
-        mystery_capelito=arrow_crossword.mystery_capelito,
+        screen=screen,
+        width=WINDOW_WIDTH,
+        height=WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT,
+        mystery_capelito=arrow_crossword.mystery_capelito
     )
     menu_sub_surface = MenuPanel(
-        screen, WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT, WINDOW_WIDTH
+        screen=screen, start_height=WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT, width=WINDOW_WIDTH
     )
 
     # Loop until the user clicks the close button.
@@ -87,11 +82,11 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
             color_arrow = BLUE_LIGHT
             color_back = BLUE
 
-        game_sub_surface.draw_grid(arrow_crossword.map_file, color_back)
+        game_sub_surface.draw_grid(arrow_crossword.game_state, color_back)
         save_rect = menu_sub_surface.draw_save_button(menu_font)
         screen_rect = menu_sub_surface.draw_screen_button(menu_font)
         letter_rect = menu_sub_surface.draw_letter_button(menu_font)
-        game_sub_surface.draw_arrow(arrow_crossword.map_file, color_arrow)
+        game_sub_surface.draw_arrow(arrow_crossword.game_state, color_arrow)
         game_sub_surface.draw_capelitos(
             arrow_crossword.capelitos, capelito_font, capelito_font_italic, letter_font, with_letters
         )
@@ -103,9 +98,9 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
         if text_editing:
             menu_sub_surface.draw_text_editing(last_capelito, text_filler, menu_font)
 
-        for event in pygame.event.get():  # User did something
-            if event.type == pygame.QUIT:  # If user clicked close
-                done = True  # Flag that we are done so we exit this loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not text_editing:
                     for capelito in arrow_crossword.capelitos:
@@ -137,9 +132,9 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
                     text_filler = text_filler[:-1]
                 if event.key == pygame.K_RETURN:
                     if text_editing == TEXT_EDITING.WORD_DEFINITION:
-                        for d in arrow_crossword.capelitos:
-                            if getattr(d, "word") == getattr(last_capelito, "word"):
-                                d.update_capelito(text_filler)
+                        for c in arrow_crossword.capelitos:
+                            if getattr(c, "word") == getattr(last_capelito, "word"):
+                                c.update_definition(text_filler)
                     if text_editing == TEXT_EDITING.MYSTERY_DEFINITION:
                         game_sub_surface.mystery_capelito["capelito"] = text_filler
                     text_editing = None

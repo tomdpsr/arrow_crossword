@@ -10,7 +10,6 @@ from arrow_crossword_generation.utilities.constants import (
 )
 from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
 from shared_utilities.arrowed_place_holder.arrowed_place_holder import get_arrowed_place_holder
-from shared_utilities.capelito.capelito import Capelito
 
 
 def find_and_enrich_custom_capelitos(

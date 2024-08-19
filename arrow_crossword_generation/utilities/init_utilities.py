@@ -11,10 +11,8 @@ from arrow_crossword_generation.utilities.generation_utilities import (
     update_possible_values,
     update_capelitos_from_game_state, shuffle_capelitos,
 )
-from arrow_crossword_graphical_interface.generate_graphic_crossword import (
-    init_capelitos,
-)
 from shared_utilities.capelito.capelito import Capelito
+from shared_utilities.capelito.utilities import init_capelitos
 
 
 def init_state(
