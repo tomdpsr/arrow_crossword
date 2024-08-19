@@ -20,27 +20,19 @@ from arrow_crossword_graphical_interface.utilities.constants import (
 )
 from arrow_crossword_graphical_interface.utilities.main_panel import MainPanel
 from arrow_crossword_graphical_interface.utilities.menu_panel import MenuPanel
+from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
 from shared_utilities.capelito.utilities import (
     save_capelitos_to_json,
     init_capelitos,
 )
 
 
-def generate_graphic_crossword(capelitos_file: str):
+def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
     # Initialize pygame
     pygame.init()
 
-    f = open(f"data/validated_capelitos/{capelitos_file.replace('.json', '')}.json")
-    filled_map_json = json.load(f)
-    all_capelitos = init_capelitos(filled_map_json)
-
-    df_map = pd.read_csv(
-        f"resources/maps/{filled_map_json["map_file"]}.csv", header=None, sep=","
-    )
-    df_map = df_map.values.tolist()
-
-    WINDOW_WIDTH = len(df_map[0]) * (WIDTH + MARGIN) + MARGIN
-    WINDOW_HEIGHT = len(df_map) * (HEIGHT + MARGIN) + MARGIN
+    WINDOW_WIDTH = len(arrow_crossword.game_state[0]) * (WIDTH + MARGIN) + MARGIN
+    WINDOW_HEIGHT = len(arrow_crossword.game_state) * (HEIGHT + MARGIN) + MARGIN
 
     # Set the HEIGHT and WIDTH of the screen
     WINDOW_SIZE = [
@@ -54,7 +46,7 @@ def generate_graphic_crossword(capelitos_file: str):
         screen,
         WINDOW_WIDTH,
         WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT,
-        mystery_capelito=filled_map_json["mystery_capelito"],
+        mystery_capelito=arrow_crossword.mystery_capelito,
     )
     menu_sub_surface = MenuPanel(
         screen, WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT, WINDOW_WIDTH
@@ -95,13 +87,13 @@ def generate_graphic_crossword(capelitos_file: str):
             color_arrow = BLUE_LIGHT
             color_back = BLUE
 
-        game_sub_surface.draw_grid(df_map, color_back)
+        game_sub_surface.draw_grid(arrow_crossword.map_file, color_back)
         save_rect = menu_sub_surface.draw_save_button(menu_font)
         screen_rect = menu_sub_surface.draw_screen_button(menu_font)
         letter_rect = menu_sub_surface.draw_letter_button(menu_font)
-        game_sub_surface.draw_arrow(df_map, color_arrow)
+        game_sub_surface.draw_arrow(arrow_crossword.map_file, color_arrow)
         game_sub_surface.draw_capelitos(
-            all_capelitos, capelito_font, capelito_font_italic, letter_font, with_letters
+            arrow_crossword.capelitos, capelito_font, capelito_font_italic, letter_font, with_letters
         )
         game_sub_surface.draw_mystery_capelito_boxes(capelito_font)
         mystery_capelito_rect = game_sub_surface.draw_mystery_capelito(
@@ -116,20 +108,14 @@ def generate_graphic_crossword(capelitos_file: str):
                 done = True  # Flag that we are done so we exit this loop
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not text_editing:
-                    for capelito in all_capelitos:
+                    for capelito in arrow_crossword.capelitos:
                         if capelito.is_clicked(event.pos):
-                            text_editing = TEXT_EDITING.WORD_capelito
+                            text_editing = TEXT_EDITING.WORD_DEFINITION
                             last_capelito = capelito
                     if mystery_capelito_rect.collidepoint(event.pos):
-                        text_editing = TEXT_EDITING.MYSTERY_capelito
+                        text_editing = TEXT_EDITING.MYSTERY_DEFINITION
                 if save_rect.collidepoint(event.pos):
-                    save_capelitos_to_json(
-                        capelitos=all_capelitos,
-                        score=filled_map_json["score"],
-                        map_file=filled_map_json["map_file"],
-                        capelito_file=capelitos_file,
-                        mystery_capelito=filled_map_json["mystery_capelito"],
-                    )
+                    arrow_crossword.save_arrow_crossword_to_json()
                 if screen_rect.collidepoint(event.pos):
                     if with_letters:
                         surface_to_screen = game_sub_surface.subsurface
@@ -140,7 +126,7 @@ def generate_graphic_crossword(capelitos_file: str):
 
                     pygame.image.save(
                         surface_to_screen,
-                        f"data/screen/export{capelitos_file}_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}{suffix}.png",
+                        f"data/screen/export{arrow_crossword.filename}_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}{suffix}.png",
                     )
                 if letter_rect.collidepoint(event.pos):
                     with_letters = not with_letters
@@ -150,11 +136,11 @@ def generate_graphic_crossword(capelitos_file: str):
                 if event.key == pygame.K_BACKSPACE:
                     text_filler = text_filler[:-1]
                 if event.key == pygame.K_RETURN:
-                    if text_editing == TEXT_EDITING.WORD_capelito:
-                        for d in all_capelitos:
+                    if text_editing == TEXT_EDITING.WORD_DEFINITION:
+                        for d in arrow_crossword.capelitos:
                             if getattr(d, "word") == getattr(last_capelito, "word"):
                                 d.update_capelito(text_filler)
-                    if text_editing == TEXT_EDITING.MYSTERY_capelito:
+                    if text_editing == TEXT_EDITING.MYSTERY_DEFINITION:
                         game_sub_surface.mystery_capelito["capelito"] = text_filler
                     text_editing = None
                     text_filler = ""

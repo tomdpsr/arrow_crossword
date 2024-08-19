@@ -36,6 +36,15 @@ class ArrowCrossword:
                         if d.i == d2.i and d.j == d2.j and d.word != d2.word:
                             d.linked_capelito, d2.linked_capelito = d2, d
             self.capelitos = all_capelitos
+
+            # Sorry for the ?
+            self.map_file = arrow_crossword['map_file']
+            self.score = arrow_crossword['score']
+            self.date = arrow_crossword['date']
+            self.mystery_capelito = arrow_crossword['mystery_capelito']
+            self.game_state = arrow_crossword['game_state']
+
+            # useful to return ?
             return arrow_crossword
 
     def save_arrow_crossword_to_json(

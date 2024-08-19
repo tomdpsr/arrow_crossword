@@ -23,7 +23,7 @@ def save_capelitos_to_json(
         "mystery_capelito": mystery_capelito,
     }
     with open(
-        f"data/validated_capelitos/{capelito_file}.json",
+        f"data/capelitos/{capelito_file}.json",
         "w",
     ) as f:
         json.dump(data_to_export, f)
