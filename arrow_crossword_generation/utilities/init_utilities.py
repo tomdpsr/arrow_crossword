@@ -9,13 +9,13 @@ from arrow_crossword_generation.utilities.constants import (
 )
 from arrow_crossword_generation.utilities.generation_utilities import (
     update_possible_values,
-    update_capelitos_from_game_state, shuffle_capelitos,
+    shuffle_capelitos,
 )
 from shared_utilities.capelito.capelito import Capelito
 from shared_utilities.capelito.utilities import init_capelitos
 
 
-def init_state(
+def     init_state_old(
     df_init: pd.DataFrame, all_dictionaries: dict, validated_custom_words: list
 ):
     df_game_state = df_init.values.tolist()

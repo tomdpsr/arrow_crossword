@@ -47,6 +47,10 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
         screen=screen, start_height=WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT, width=WINDOW_WIDTH
     )
 
+    # update graphicals definitions
+    for c in arrow_crossword.capelitos:
+        c.update_wrapped_definition()
+
     # Loop until the user clicks the close button.
     done = False
 
@@ -134,7 +138,7 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
                     if text_editing == TEXT_EDITING.WORD_DEFINITION:
                         for c in arrow_crossword.capelitos:
                             if getattr(c, "word") == getattr(last_capelito, "word"):
-                                c.update_definition(text_filler)
+                                c.update_wrapped_definition(text_filler)
                     if text_editing == TEXT_EDITING.MYSTERY_DEFINITION:
                         game_sub_surface.mystery_capelito["capelito"] = text_filler
                     text_editing = None

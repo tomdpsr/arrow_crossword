@@ -116,22 +116,3 @@ def get_possibles_values_from_dic(letters, sub_dict: dict) -> list:
     return possible_values
 
 
-def update_capelitos_from_game_state(
-    capelitos: list[Capelito],
-    df_game_state: list[list[str]],
-) -> list[Capelito]:
-    for capelito in capelitos:
-        arrowed_place_holder = get_arrowed_place_holder(capelito.capelito_type)
-        letters = ""
-        i = capelito.i + arrowed_place_holder.i_diff
-        j = capelito.j + arrowed_place_holder.j_diff
-        while not (df_game_state[i][j].isnumeric()):
-            letters += df_game_state[i][j]
-            if arrowed_place_holder.is_horizontal:
-                j += 1
-            else:
-                i += 1
-            if j == len(df_game_state[0]) or i == len(df_game_state):
-                break
-        capelito.word = letters
-    return capelitos
