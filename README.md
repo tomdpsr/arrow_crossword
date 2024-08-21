@@ -9,3 +9,8 @@
 4 : Fleche bas (gauche)
 5 : Fleche droite (haut)
 6 : Fleche droite (bas)
+
+
+TODO : 
+changer l'init de arrow crossword pour avoir des capelitos vides et les lier
+changer le generate pour utiliser le self.capelitos et autres

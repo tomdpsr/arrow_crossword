@@ -1,5 +1,5 @@
 import textwrap
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import pygame
 
@@ -45,11 +45,10 @@ class Capelito:
         return hash((self.i, self.j, self.capelito_type))
 
     def __post_init__(self):
-        self.update_definition(self.definition)
         self.arrowed_place_holder = get_arrowed_place_holder(self.capelito_type)
 
-    def update_definition(self, new_definition):
-        self.definition = new_definition
+    def update_wrapped_definition(self, new_definition=None):
+        self.definition = new_definition or self.definition
         wrapped_capelito = textwrap.wrap(self.definition, width=11, max_lines=3)
         for index, w in enumerate(wrapped_capelito[1:]):
             if f" {w}" not in self.definition:
@@ -91,7 +90,9 @@ class Capelito:
         images, self.rects = [], []
         for wd in range(len(self.wrapped_capelito)):
             if self.is_custom_capelito:
-                image = font_italic.render(self.wrapped_capelito[wd].upper(), True, BLACK)
+                image = font_italic.render(
+                    self.wrapped_capelito[wd].upper(), True, BLACK
+                )
             else:
                 image = font.render(self.wrapped_capelito[wd].upper(), True, BLACK)
             images.append(image)
