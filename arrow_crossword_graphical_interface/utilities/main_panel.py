@@ -117,7 +117,12 @@ class MainPanel:
                         )
 
     def draw_capelitos(
-        self, capelitos, capelito_font, capelito_font_italic, letter_font, with_capelito_letters: bool
+        self,
+        capelitos,
+        capelito_font,
+        capelito_font_italic,
+        letter_font,
+        with_capelito_letters: bool,
     ):
         # Draw the arrows
         for d in capelitos:
@@ -153,10 +158,12 @@ class MainPanel:
 
     def draw_mystery_capelito(self, font):
         # Draw the arrows
-        letter_number = font.render(self.mystery_capelito["definition"].upper(), True, BLACK)
+        letter_number = font.render(
+            self.mystery_capelito["definition"].upper(), True, BLACK
+        )
         mystery_capelito_rect = letter_number.get_rect(
             bottomright=(
-                self.width - MARGIN*2,
+                self.width - MARGIN * 2,
                 PANEL_MYSTERY_WORD_HEIGHT - (MARGIN * 15 + MYSTERY_BOX_WIDTH),
             ),
         )

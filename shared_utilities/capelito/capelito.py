@@ -47,7 +47,7 @@ class Capelito:
     def __post_init__(self):
         self.arrowed_place_holder = get_arrowed_place_holder(self.capelito_type)
 
-    def update_wrapped_definition(self, new_definition = None):
+    def update_wrapped_definition(self, new_definition=None):
         self.definition = new_definition or self.definition
         wrapped_capelito = textwrap.wrap(self.definition, width=11, max_lines=3)
         for index, w in enumerate(wrapped_capelito[1:]):
@@ -90,7 +90,9 @@ class Capelito:
         images, self.rects = [], []
         for wd in range(len(self.wrapped_capelito)):
             if self.is_custom_capelito:
-                image = font_italic.render(self.wrapped_capelito[wd].upper(), True, BLACK)
+                image = font_italic.render(
+                    self.wrapped_capelito[wd].upper(), True, BLACK
+                )
             else:
                 image = font.render(self.wrapped_capelito[wd].upper(), True, BLACK)
             images.append(image)

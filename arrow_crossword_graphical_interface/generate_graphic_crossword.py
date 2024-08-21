@@ -15,7 +15,13 @@ from arrow_crossword_graphical_interface.utilities.constants import (
     DEFINITION_FONT_SIZE,
     WHITE,
     PANEL_MYSTERY_WORD_HEIGHT,
-    TEXT_EDITING, ITALIC_FONT_PATH, MYSTERY_FONT_SIZE, BLUE_LIGHT, BLUE, GREY, GREY_LIGHT,
+    TEXT_EDITING,
+    ITALIC_FONT_PATH,
+    MYSTERY_FONT_SIZE,
+    BLUE_LIGHT,
+    BLUE,
+    GREY,
+    GREY_LIGHT,
 )
 from arrow_crossword_graphical_interface.utilities.main_panel import MainPanel
 from arrow_crossword_graphical_interface.utilities.menu_panel import MenuPanel
@@ -41,10 +47,12 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
         screen=screen,
         width=WINDOW_WIDTH,
         height=WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT,
-        mystery_capelito=arrow_crossword.mystery_capelito
+        mystery_capelito=arrow_crossword.mystery_capelito,
     )
     menu_sub_surface = MenuPanel(
-        screen=screen, start_height=WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT, width=WINDOW_WIDTH
+        screen=screen,
+        start_height=WINDOW_HEIGHT + PANEL_MYSTERY_WORD_HEIGHT,
+        width=WINDOW_WIDTH,
     )
 
     # update graphicals definitions
@@ -92,12 +100,14 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
         letter_rect = menu_sub_surface.draw_letter_button(menu_font)
         game_sub_surface.draw_arrow(arrow_crossword.game_state, color_arrow)
         game_sub_surface.draw_capelitos(
-            arrow_crossword.capelitos, capelito_font, capelito_font_italic, letter_font, with_letters
+            arrow_crossword.capelitos,
+            capelito_font,
+            capelito_font_italic,
+            letter_font,
+            with_letters,
         )
         game_sub_surface.draw_mystery_capelito_boxes(capelito_font)
-        mystery_capelito_rect = game_sub_surface.draw_mystery_capelito(
-            mystery_font
-        )
+        mystery_capelito_rect = game_sub_surface.draw_mystery_capelito(mystery_font)
         game_sub_surface.draw_grid_numbers(capelito_font)
         if text_editing:
             menu_sub_surface.draw_text_editing(last_capelito, text_filler, menu_font)
@@ -118,14 +128,15 @@ def generate_graphic_crossword(arrow_crossword: ArrowCrossword):
                 if screen_rect.collidepoint(event.pos):
                     if with_letters:
                         surface_to_screen = game_sub_surface.subsurface
-                        suffix = '_wl'
+                        suffix = "_wl"
                     else:
                         surface_to_screen = game_sub_surface.main_surface
-                        suffix = ''
+                        suffix = ""
 
                     pygame.image.save(
                         surface_to_screen,
-                        f"data/screen/export{arrow_crossword.filename}_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}{suffix}.png",
+                        # TODO CHANGE SAVE FILENAME
+                        f"data/screen/export{arrow_crossword.file_path}_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}{suffix}.png",
                     )
                 if letter_rect.collidepoint(event.pos):
                     with_letters = not with_letters

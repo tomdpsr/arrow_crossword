@@ -1,8 +1,7 @@
 import os
 from dataclasses import dataclass, field
 
-from arrow_crossword_generation.utilities.constants import DICTIONARY_TO_PATH
-from shared_utilities.dictionary_handler.constants import DICTIONARY
+from shared_utilities.dictionary_handler.constants import DICTIONARY, DICTIONARY_TO_PATH
 
 
 @dataclass
@@ -14,13 +13,18 @@ class DictionaryHandler:
 
     def __post_init__(self):
         self.custom_dictionary = self.init_dictionary(DICTIONARY.CUSTOM_DICTIONARY)
-        self.main_dictionary = self.init_dictionary(DICTIONARY.MAIN_DICTIONARY)
-        self.custom_dictionary = self.init_dictionary(DICTIONARY.CUSTOM_DICTIONARY)
+        self.main_dictionary = self.init_dictionary(self.main_dictionary_folder)
+        self.forbidden_dictionary = self.init_dictionary(
+            DICTIONARY.FORBIDDEN_DICTIONARY
+        )
 
-    def init_dictionary(self, sub_dict_folder: str):
+    @staticmethod
+    def init_dictionary(sub_dict_folder: str) -> dict:
         dictionary = {}
         for i in range(2, 25):
-            dic_file = f"{DICTIONARY_TO_PATH[sub_dict_folder]}/{sub_dict_folder}/word_{i}.csv"
+            dic_file = (
+                f"{DICTIONARY_TO_PATH[sub_dict_folder]}/{sub_dict_folder}/word_{i}.csv"
+            )
             if os.path.isfile(dic_file):
                 df_words_file = open(
                     f"{DICTIONARY_TO_PATH[sub_dict_folder]}/{sub_dict_folder}/word_{i}.csv",

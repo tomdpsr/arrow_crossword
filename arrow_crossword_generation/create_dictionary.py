@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import unidecode
 
-from arrow_crossword_generation.utilities.constants import DICTIONARY_TO_PATH
+from shared_utilities.dictionary_handler.constants import DICTIONARY_TO_PATH
 
 
 def clean_dictionary(df: pd.DataFrame) -> pd.DataFrame:
@@ -17,9 +17,7 @@ def clean_dictionary(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def create_dictionary(dictionary: str):
-    df = pd.read_csv(
-        f"{DICTIONARY_TO_PATH[dictionary]}/{dictionary}.csv", dtype=object
-    )
+    df = pd.read_csv(f"{DICTIONARY_TO_PATH[dictionary]}/{dictionary}.csv", dtype=object)
 
     df = clean_dictionary(df)
 

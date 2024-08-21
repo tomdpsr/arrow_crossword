@@ -66,7 +66,5 @@ ArrowedPlaceHolders = [
 
 def get_arrowed_place_holder(capelito_type: str) -> ArrowedPlaceHolder:
     return next(
-        x
-        for x in ArrowedPlaceHolders
-        if getattr(x, "capelito_type") == capelito_type
+        x for x in ArrowedPlaceHolders if getattr(x, "capelito_type") == capelito_type
     )

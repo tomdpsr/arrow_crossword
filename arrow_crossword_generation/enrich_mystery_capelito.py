@@ -7,18 +7,12 @@ import pandas as pd
 from loguru import logger
 
 from arrow_crossword_generation.create_dictionary import clean_dictionary
-from arrow_crossword_generation.utilities.constants import (
-    DICTIONARY_TO_PATH,
-    DICTIONARY,
-)
 from arrow_crossword_generation.utilities.generation_utilities import (
     clean_custom_possibles_words,
-    set_letters,
-)
-from arrow_crossword_generation.utilities.init_utilities import (
-    get_validated_custom_words,
 )
 from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
+from shared_utilities.dictionary_handler.constants import DICTIONARY_TO_PATH, DICTIONARY
+from shared_utilities.utilities import get_validated_custom_words
 
 MysteryLetter = namedtuple(
     "MysteryLetter",
@@ -53,20 +47,29 @@ def pick_a_custom_word_from_state(available_custom_words, letters):
             return word_letters
     return []
 
+
 def sort_dict_by_unused_words(magazine_letters, word_letters):
     i_already_used = [wl.i for wl in word_letters]
     j_already_used = [wl.j for wl in word_letters]
     for key, value in magazine_letters.items():
         # key is False if its coordinates are never used before, so sorted last for pop()
-        value.sort(key=lambda x: (x.i in i_already_used) or (x.j in j_already_used), reverse=True)
+        value.sort(
+            key=lambda x: (x.i in i_already_used) or (x.j in j_already_used),
+            reverse=True,
+        )
     return magazine_letters
 
-def enrich_mystery_capelito_2(arrow_crossword: ArrowCrossword, custom_possible_words: list[str]) -> ArrowCrossword:
+
+def enrich_mystery_capelito_2(
+    arrow_crossword: ArrowCrossword, custom_possible_words: list[str]
+) -> ArrowCrossword:
     letters = []
     for i in range(len(arrow_crossword.game_state)):
         for j in range(len(arrow_crossword.game_state[i])):
             if not arrow_crossword.game_state[i][j].isnumeric():
-                letters.append(MysteryLetter(letter=arrow_crossword.game_state[i][j], i=i, j=j))
+                letters.append(
+                    MysteryLetter(letter=arrow_crossword.game_state[i][j], i=i, j=j)
+                )
 
     shuffle(custom_possible_words)
 
@@ -82,7 +85,7 @@ def enrich_mystery_capelito_2(arrow_crossword: ArrowCrossword, custom_possible_w
 
 
 def enrich_mystery_capelito(arrow_crossword: ArrowCrossword) -> ArrowCrossword:
-    logger.info('Enrichment of Mystery Capelito is starting...')
+    logger.info("Enrichment of Mystery Capelito is starting...")
     validated_custom_words = get_validated_custom_words()
     df_words_file = pd.read_csv(
         f"{DICTIONARY_TO_PATH[DICTIONARY.CUSTOM_DICTIONARY]}/{DICTIONARY.CUSTOM_DICTIONARY}.csv",
@@ -96,6 +99,8 @@ def enrich_mystery_capelito(arrow_crossword: ArrowCrossword) -> ArrowCrossword:
     )
 
     arrow_crossword = enrich_mystery_capelito_2(arrow_crossword, custom_possible_words)
-    logger.info(f'Found word {arrow_crossword.mystery_capelito["word"]} for mystery capelito')
+    logger.info(
+        f'Found word {arrow_crossword.mystery_capelito["word"]} for mystery capelito'
+    )
 
     return arrow_crossword
