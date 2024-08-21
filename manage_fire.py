@@ -38,8 +38,8 @@ class GenerateArrowCrossword(object):
     def generate_and_enrich(self, dictionary=DICTIONARY.FRENCH_DICTIONARY, map_file='map_xs'):
         self.generate_arrow_crosswords(dictionary, map_file)
         self.enrich_mystery_capelitos()
-        self.enrich_arrow_crossword_definitions()
-        self.generate_graphic_crossword()
+        #self.enrich_arrow_crossword_definitions()
+       # self.generate_graphic_crossword()
 
 
 if __name__ == "__main__":

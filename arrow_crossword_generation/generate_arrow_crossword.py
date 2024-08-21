@@ -14,7 +14,6 @@ from arrow_crossword_generation.utilities.generation_utilities import (
 from arrow_crossword_generation.utilities.init_utilities import (
     init_all_dictionaries,
     get_validated_custom_words,
-    init_state_old,
 )
 from arrow_crossword_generation.utilities.post_generation_utilities import ( enrich_forbidden_dictionary,
 )
