@@ -1,6 +1,6 @@
 import pygame
 
-from arrow_crossword_graphical_interface.utilities.constants import (
+from back.arrow_crossword_graphical_interface.utilities.constants import (
     WHITE,
     MARGIN,
     WIDTH,
@@ -12,7 +12,7 @@ from arrow_crossword_graphical_interface.utilities.constants import (
     MYSTERY_BOX_WIDTH,
     MYSTERY_BOX_HEIGHT,
 )
-from shared_utilities.arrowed_place_holder.arrowed_place_holder import (
+from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
     get_arrowed_place_holder,
 )
 

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import pygame
 
-from arrow_crossword_graphical_interface.utilities.constants import (
+from back.arrow_crossword_graphical_interface.utilities.constants import (
     BLACK,
     MARGIN,
     WIDTH,
@@ -11,7 +11,7 @@ from arrow_crossword_graphical_interface.utilities.constants import (
     DEFINITION_FONT_SIZE,
     PANEL_MYSTERY_WORD_HEIGHT,
 )
-from shared_utilities.arrowed_place_holder.arrowed_place_holder import (
+from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
     get_arrowed_place_holder,
     ArrowedPlaceHolder,
 )

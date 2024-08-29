@@ -1,9 +1,8 @@
 import datetime
-import json
 
 import pygame
 
-from arrow_crossword_graphical_interface.utilities.constants import (
+from back.arrow_crossword_graphical_interface.utilities.constants import (
     WIDTH,
     MARGIN,
     HEIGHT,
@@ -23,9 +22,9 @@ from arrow_crossword_graphical_interface.utilities.constants import (
     GREY,
     GREY_LIGHT,
 )
-from arrow_crossword_graphical_interface.utilities.main_panel import MainPanel
-from arrow_crossword_graphical_interface.utilities.menu_panel import MenuPanel
-from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
+from back.arrow_crossword_graphical_interface.utilities.main_panel import MainPanel
+from back.arrow_crossword_graphical_interface.utilities.menu_panel import MenuPanel
+from back.shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
 
 
 def generate_graphic_crossword(arrow_crossword: ArrowCrossword):

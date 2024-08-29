@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import unidecode
 
-from shared_utilities.dictionary_handler.constants import DICTIONARY_TO_PATH
+from back.shared_utilities.dictionary_handler.constants import DICTIONARY_TO_PATH
 
 
 def clean_dictionary(df: pd.DataFrame) -> pd.DataFrame:
