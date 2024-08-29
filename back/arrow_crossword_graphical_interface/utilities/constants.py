@@ -31,8 +31,8 @@ MENU_FONT_SIZE = 14
 LETTER_FONT_SIZE = 18
 
 # MAIN_FONT = 'arial'
-MAIN_FONT_PATH = "resources/fonts/trebuchet-ms-grassetto.ttf"
-ITALIC_FONT_PATH = "resources/fonts/Trebuchet-MS-Italic.ttf"
+MAIN_FONT_PATH = "back/resources/fonts/trebuchet-ms-grassetto.ttf"
+ITALIC_FONT_PATH = "back/resources/fonts/Trebuchet-MS-Italic.ttf"
 
 
 class TEXT_EDITING:

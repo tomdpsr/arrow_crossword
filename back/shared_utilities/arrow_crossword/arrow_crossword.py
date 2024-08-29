@@ -4,15 +4,15 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from arrow_crossword_generation.utilities.generation_utilities import (
+from back.arrow_crossword_generation.utilities.generation_utilities import (
     shuffle_capelitos,
     update_possible_values,
 )
-from shared_utilities.arrowed_place_holder.arrowed_place_holder import (
+from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
     get_arrowed_place_holder,
 )
-from shared_utilities.capelito.capelito import Capelito
-from shared_utilities.dictionary_handler.dictionary_handler import DictionaryHandler
+from back.shared_utilities.capelito.capelito import Capelito
+from back.shared_utilities.dictionary_handler.dictionary_handler import DictionaryHandler
 
 
 @dataclass
@@ -54,7 +54,7 @@ class ArrowCrossword:
 
     def init_state(self, dictionary_hander: DictionaryHandler, validated_custom_words, opts: dict):
         df_init = pd.read_csv(
-            f"resources/maps/{self.map_file}.csv", dtype=object, sep=",", header=None
+            f"back/resources/maps/{self.map_file}.csv", dtype=object, sep=",", header=None
         )
         self.game_state = df_init.values.tolist()
         self.capelitos = []

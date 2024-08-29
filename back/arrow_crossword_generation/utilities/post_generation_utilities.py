@@ -4,9 +4,9 @@ import pandas as pd
 from loguru import logger
 from openai import OpenAI
 
-from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
-from shared_utilities.arrowed_place_holder.arrowed_place_holder import get_arrowed_place_holder
-from shared_utilities.dictionary_handler.constants import DICTIONARY_TO_PATH, DICTIONARY
+from back.shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
+from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import get_arrowed_place_holder
+from back.shared_utilities.dictionary_handler.constants import DICTIONARY_TO_PATH, DICTIONARY
 
 
 def find_and_enrich_custom_capelitos(

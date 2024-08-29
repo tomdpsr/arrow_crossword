@@ -1,6 +1,6 @@
 import pygame
 
-from arrow_crossword_graphical_interface.utilities.constants import (
+from back.arrow_crossword_graphical_interface.utilities.constants import (
     WHITE,
     MARGIN,
     WIDTH,

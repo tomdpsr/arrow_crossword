@@ -11,10 +11,10 @@ class DICTIONARY:
 DICTIONARY_TO_PATH = {
     DICTIONARY.CUSTOM_DICTIONARY: "data/" + DICTIONARY.CUSTOM_DICTIONARY,
     DICTIONARY.FORBIDDEN_DICTIONARY: "data/" + DICTIONARY.FORBIDDEN_DICTIONARY,
-    DICTIONARY.MAIN_DICTIONARY: "resources/dictionaries",
-    DICTIONARY.FRENCH_DICTIONARY: "resources/dictionaries",
-    DICTIONARY.USITO_DICTIONARY: "resources/dictionaries",
-    DICTIONARY.FULL_DICTIONARY: "resources/dictionaries",
+    DICTIONARY.MAIN_DICTIONARY: "back/resources/dictionaries",
+    DICTIONARY.FRENCH_DICTIONARY: "back/resources/dictionaries",
+    DICTIONARY.USITO_DICTIONARY: "back/resources/dictionaries",
+    DICTIONARY.FULL_DICTIONARY: "back/resources/dictionaries",
 }
 
 

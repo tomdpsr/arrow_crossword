@@ -1,16 +1,15 @@
-import click
 import fire
 
-from arrow_crossword_generation.enrich_arrow_crossword_definition import (
+from back.arrow_crossword_generation.enrich_arrow_crossword_definition import (
     enrich_arrow_crossword_definition,
 )
-from arrow_crossword_generation.enrich_mystery_capelito import enrich_mystery_capelito
-from arrow_crossword_generation.generate_arrow_crossword import generate_arrow_crossword
-from arrow_crossword_graphical_interface.generate_graphic_crossword import (
+from back.arrow_crossword_generation.enrich_mystery_capelito import enrich_mystery_capelito
+from back.arrow_crossword_generation.generate_arrow_crossword import generate_arrow_crossword
+from back.arrow_crossword_graphical_interface.generate_graphic_crossword import (
     generate_graphic_crossword,
 )
-from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
-from shared_utilities.dictionary_handler.constants import DICTIONARY
+from back.shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
+from back.shared_utilities.dictionary_handler.constants import DICTIONARY
 
 
 class GenerateArrowCrossword(object):

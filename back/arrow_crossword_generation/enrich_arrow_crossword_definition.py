@@ -1,12 +1,10 @@
-import json
-
 from loguru import logger
 
-from arrow_crossword_generation.utilities.post_generation_utilities import (
+from back.arrow_crossword_generation.utilities.post_generation_utilities import (
     enrich_non_custom_capelitos,
     find_and_enrich_custom_capelitos,
 )
-from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
+from back.shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
 
 
 def enrich_arrow_crossword_definition(

@@ -3,11 +3,11 @@ from random import shuffle
 
 from loguru import logger
 
-from shared_utilities.arrowed_place_holder.arrowed_place_holder import (
+from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
     get_arrowed_place_holder,
 )
-from shared_utilities.capelito.capelito import Capelito
-from shared_utilities.dictionary_handler.dictionary_handler import DictionaryHandler
+from back.shared_utilities.capelito.capelito import Capelito
+from back.shared_utilities.dictionary_handler.dictionary_handler import DictionaryHandler
 
 
 def shuffle_capelitos(capelitos: list[Capelito], opts: dict) -> list[Capelito]:

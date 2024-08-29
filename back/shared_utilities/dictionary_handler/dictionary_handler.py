@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass, field
 
-from shared_utilities.dictionary_handler.constants import DICTIONARY, DICTIONARY_TO_PATH
+from back.shared_utilities.dictionary_handler.constants import DICTIONARY, DICTIONARY_TO_PATH
 
 
 @dataclass

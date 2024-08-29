@@ -1,6 +1,6 @@
 import os
 
-from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
+from back.shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
 
 
 def get_validated_custom_words() -> list:

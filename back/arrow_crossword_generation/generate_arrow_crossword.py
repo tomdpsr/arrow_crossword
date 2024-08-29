@@ -4,18 +4,18 @@ import pandas as pd
 import pygame
 from loguru import logger
 
-from arrow_crossword_generation.utilities.generation_utilities import (
+from back.arrow_crossword_generation.utilities.generation_utilities import (
     set_letters,
     update_possible_values,
     check_number_capelito_is_set,
 )
 
-from arrow_crossword_generation.utilities.post_generation_utilities import (
+from back.arrow_crossword_generation.utilities.post_generation_utilities import (
     enrich_forbidden_dictionary,
 )
-from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
-from shared_utilities.dictionary_handler.dictionary_handler import DictionaryHandler
-from shared_utilities.utilities import get_validated_custom_words
+from back.shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
+from back.shared_utilities.dictionary_handler.dictionary_handler import DictionaryHandler
+from back.shared_utilities.utilities import get_validated_custom_words
 
 
 def generate_arrow_crossword(main_dictionary_folder: str, map_file: str):
