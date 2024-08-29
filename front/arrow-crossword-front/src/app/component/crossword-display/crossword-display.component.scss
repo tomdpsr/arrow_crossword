@@ -1,0 +1,26 @@
+.crossword-grid table {
+  border-collapse: collapse;
+  border: 1px solid black;
+  background-color: #e0e2ec;
+  width: 100%;
+}
+
+.crossword-grid td {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
+  &.locked {
+    input {
+      background-color: beige;
+    }
+  }
+}
+
+.crossword-grid input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+  text-transform: uppercase;
+}

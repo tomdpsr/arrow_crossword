@@ -1,0 +1,32 @@
+<h2>Grille</h2>
+
+<div class="crossword-grid">
+  <table>
+    <tbody>
+      <tr *ngFor="let rowUserEntries of userEntries; let i = index">
+        <td
+          *ngFor="let cellUserEntry of rowUserEntries; let j = index"
+          [class.locked]="cellUserEntry.locked"
+        >
+          <mat-form-field>
+            <input
+              matInput
+              type="text"
+              [value]="
+                cellUserEntry.direction
+                  ? cellUserEntry.value + '⬇️'
+                  : cellUserEntry.value
+              "
+              (input)="onUserInput(i, j, $event)"
+              [matTooltip]="cellUserEntry.definition"
+              [matTooltipDisabled]="!cellUserEntry.locked"
+              [disabled]="cellUserEntry.locked"
+              maxlength="1"
+              placeholder="_"
+            />
+          </mat-form-field>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
