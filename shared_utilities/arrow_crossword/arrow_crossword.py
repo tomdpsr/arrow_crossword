@@ -52,7 +52,7 @@ class ArrowCrossword:
             self.mystery_capelito = arrow_crossword["mystery_capelito"]
             self.game_state = arrow_crossword["game_state"]
 
-    def init_state(self, dictionary_hander: DictionaryHandler, validated_custom_words):
+    def init_state(self, dictionary_hander: DictionaryHandler, validated_custom_words, opts: dict):
         df_init = pd.read_csv(
             f"resources/maps/{self.map_file}.csv", dtype=object, sep=",", header=None
         )
@@ -64,9 +64,9 @@ class ArrowCrossword:
                     for digit in self.game_state[i][j]:
                         self.capelitos.append(Capelito(capelito_type=digit, i=i, j=j))
         self.update_capelitos_from_game_state()
-        self.capelitos = shuffle_capelitos(self.capelitos)
+        self.capelitos = shuffle_capelitos(self.capelitos, opts)
         self.capelitos, _ = update_possible_values(
-            self.capelitos, dictionary_hander, validated_custom_words
+            self.capelitos, dictionary_hander, validated_custom_words, opts
         )
         self.link_capelitos_together()
         for i in range(len(self.capelitos)):

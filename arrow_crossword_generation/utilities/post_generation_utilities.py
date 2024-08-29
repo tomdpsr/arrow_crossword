@@ -50,7 +50,7 @@ def enrich_forbidden_dictionary(forbidden_dictionary: dict):
 
 def get_open_ai_dictionaries(words):
     client = OpenAI()
-    prompt = ('Écris moi les définitions adaptée pour des mots fléchés de la liste ci-dessous.'
+    prompt = ('Écris moi les définitions adaptées pour des mots fléchés de la liste ci-dessous.'
             'Le format doit être uniquement un fichier json avec en clef le mot et en valeur la définition correspondante'
             'La longueur de chaque définition doit être inférieure à 20 caractères'
             f'Liste : "[\'{'\',\''.join(words)}\']"')

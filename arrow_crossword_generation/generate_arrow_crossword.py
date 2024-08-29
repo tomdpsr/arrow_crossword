@@ -1,10 +1,9 @@
+import os
+
 import pandas as pd
 import pygame
 from loguru import logger
 
-from arrow_crossword_generation.utilities.constants import (
-    THRESHOLD,
-)
 from arrow_crossword_generation.utilities.generation_utilities import (
     set_letters,
     update_possible_values,
@@ -21,12 +20,18 @@ from shared_utilities.utilities import get_validated_custom_words
 
 def generate_arrow_crossword(main_dictionary_folder: str, map_file: str):
     pygame.init()
+    opts = {
+        'nb_max_tries_per_word': int(os.environ['NB_MAX_TRIES_PER_WORD']),
+        'nb_custom_capelitos_min': int(os.environ['NB_CUSTOM_CAPELITOS_MIN'])
+    }
     validated_custom_words = get_validated_custom_words()
 
     dictionary_hander = DictionaryHandler(main_dictionary_folder)
 
     arrow_crossword = ArrowCrossword(map_file=map_file)
-    arrow_crossword.init_state(dictionary_hander, validated_custom_words)
+    arrow_crossword.init_state(dictionary_hander, validated_custom_words, opts)
+
+
 
     max_size = len(arrow_crossword.capelitos)
     logger.info(f"Create arrow crossword for {max_size} capelitos")
@@ -35,12 +40,13 @@ def generate_arrow_crossword(main_dictionary_folder: str, map_file: str):
         capelito_index: int,
         arrow_crossword: ArrowCrossword,
         dictionary_hander: DictionaryHandler,
+        opts: dict,
     ) -> bool:
         if capelito_index == max_size:
             return True
         capelito = arrow_crossword.capelitos[capelito_index]
         if not capelito.is_set:
-            while capelito.possible_values != [] and capelito.nb_tries < THRESHOLD:
+            while capelito.possible_values != [] and capelito.nb_tries < opts['nb_max_tries_per_word']:
                 capelito.nb_tries += 1
                 chosen_word = capelito.possible_values.pop()
                 logger.debug(
@@ -61,6 +67,7 @@ def generate_arrow_crossword(main_dictionary_folder: str, map_file: str):
                         arrow_crossword.capelitos,
                         dictionary_hander,
                         validated_custom_words,
+                        opts
                     )
                 )
 
@@ -69,6 +76,7 @@ def generate_arrow_crossword(main_dictionary_folder: str, map_file: str):
                         capelito_index + 1,
                         arrow_crossword,
                         dictionary_hander,
+                        opts
                     ):
                         return True
 
@@ -81,9 +89,9 @@ def generate_arrow_crossword(main_dictionary_folder: str, map_file: str):
                 )
             return False
         else:
-            return backtracking(capelito_index + 1, arrow_crossword, dictionary_hander)
+            return backtracking(capelito_index + 1, arrow_crossword, dictionary_hander, opts)
 
-    backtracking(0, arrow_crossword, dictionary_hander)
+    backtracking(0, arrow_crossword, dictionary_hander, opts)
     df_all_capelitos = pd.DataFrame(arrow_crossword.game_state)
 
     if check_number_capelito_is_set(

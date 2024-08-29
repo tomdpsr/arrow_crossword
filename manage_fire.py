@@ -35,7 +35,7 @@ class GenerateArrowCrossword(object):
         generate_graphic_crossword(self.arrow_crossword)
 
     def generate_and_enrich(
-        self, dictionary=DICTIONARY.FRENCH_DICTIONARY, map_file="map_xs"
+        self, dictionary=DICTIONARY.FRENCH_DICTIONARY, map_file="map_s"
     ):
         self.generate_arrow_crosswords(dictionary, map_file)
         self.enrich_mystery_capelitos()
