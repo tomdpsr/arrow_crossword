@@ -1,22 +1,60 @@
-[tool.poetry]
+[project]
 name = "arrow-crossword"
 version = "0.1.0"
 description = "Create your own swedish style arrow crosswords"
-authors = ["Tom Dupisre <tom.dupisre@gmail.com>"]
-readme = "README.md"
-package-mode = false
+authors = [
+    { name = "Tom Dupisre", email = "tom.dupisre@gmail.com" }
+]
+dependencies = [
+    "pandas==2.2.2",
+    "click==8.1.7",
+    "pygame==2.5.2",
+    "openai==1.35.4",
+    "loguru==0.7.2",
+    "fire==0.6.0",
+    "unidecode==1.3.8",
+    "black==24.4.2",
+]
+requires-python = ">=3.12,<3.13"
 
-[tool.poetry.dependencies]
-python = "^3.12.3"
-pandas = "^2.2.2"
-click = "^8.1.7"
-black = "^24.4.2"
-pygame = "^2.5.2"
-openai = "^1.35.4"
-loguru = "^0.7.2"
-fire = "^0.6.0"
-
+[project.optional-dependencies]
+dev = ["black==24.4.2", ]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+python = "3.12.3"
+packages = []
+
+[tool.uv.venv]
+name = ".venv"
+include-system-site-packages = false
+
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+include = '\.pyi?$'
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warningsxx
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+
+[project.urls]
+Documentation = "https://github.com/username/project#readme"
+Source = "https://github.com/username/project"

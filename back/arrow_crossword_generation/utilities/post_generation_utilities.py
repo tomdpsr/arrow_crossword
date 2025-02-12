@@ -68,7 +68,6 @@ def get_open_ai_dictionaries(words):
 
 
 def enrich_non_custom_capelitos(arrow_crossword: ArrowCrossword) -> ArrowCrossword:
-
     word_to_retrieve_capelito = [d.word for d in arrow_crossword.capelitos if not d.is_custom_capelito]
     capelito_dictionary = get_open_ai_dictionaries(word_to_retrieve_capelito)
 

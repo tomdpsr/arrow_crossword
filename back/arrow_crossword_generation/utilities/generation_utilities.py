@@ -7,14 +7,16 @@ from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
     get_arrowed_place_holder,
 )
 from back.shared_utilities.capelito.capelito import Capelito
-from back.shared_utilities.dictionary_handler.dictionary_handler import DictionaryHandler
+from back.shared_utilities.dictionary_handler.dictionary_handler import (
+    DictionaryHandler,
+)
 
 
 def shuffle_capelitos(capelitos: list[Capelito], opts: dict) -> list[Capelito]:
     # We only keep min 3 length words
     custom_capelitos = [d for d in capelitos if len(d.word) > 2]
     shuffle(custom_capelitos)
-    custom_capelitos = custom_capelitos[:opts['nb_custom_capelitos_min']]
+    custom_capelitos = custom_capelitos[: opts["nb_custom_capelitos_min"]]
 
     capelitos = [d for d in capelitos if d not in custom_capelitos]
     capelitos = sorted(capelitos, key=lambda x: len(x.word), reverse=True)
@@ -56,13 +58,13 @@ def update_possible_values(
     capelitos: list[Capelito],
     dictionary_hander: DictionaryHandler,
     validated_custom_words: list[str],
-    opts: dict
+    opts: dict,
 ) -> list[Capelito]:
     cursor = 0
     every_capelito_has_solution = True
     for capelito in capelitos:
         cursor += 1
-        should_be_custom = cursor <= opts['nb_custom_capelitos_min']
+        should_be_custom = cursor <= opts["nb_custom_capelitos_min"]
         if (
             capelito.word in dictionary_hander.forbidden_dictionary[len(capelito.word)]
             and not should_be_custom

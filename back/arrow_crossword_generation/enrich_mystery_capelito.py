@@ -10,7 +10,10 @@ from back.arrow_crossword_generation.utilities.generation_utilities import (
     clean_custom_possibles_words,
 )
 from back.shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
-from back.shared_utilities.dictionary_handler.constants import DICTIONARY_TO_PATH, DICTIONARY
+from back.shared_utilities.dictionary_handler.constants import (
+    DICTIONARY_TO_PATH,
+    DICTIONARY,
+)
 from back.shared_utilities.utilities import get_validated_custom_words
 
 MysteryLetter = namedtuple(

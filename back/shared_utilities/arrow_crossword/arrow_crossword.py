@@ -12,7 +12,9 @@ from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
     get_arrowed_place_holder,
 )
 from back.shared_utilities.capelito.capelito import Capelito
-from back.shared_utilities.dictionary_handler.dictionary_handler import DictionaryHandler
+from back.shared_utilities.dictionary_handler.dictionary_handler import (
+    DictionaryHandler,
+)
 
 
 @dataclass
@@ -52,9 +54,14 @@ class ArrowCrossword:
             self.mystery_capelito = arrow_crossword["mystery_capelito"]
             self.game_state = arrow_crossword["game_state"]
 
-    def init_state(self, dictionary_hander: DictionaryHandler, validated_custom_words, opts: dict):
+    def init_state(
+        self, dictionary_hander: DictionaryHandler, validated_custom_words, opts: dict
+    ):
         df_init = pd.read_csv(
-            f"back/resources/maps/{self.map_file}.csv", dtype=object, sep=",", header=None
+            f"back/resources/maps/{self.map_file}.csv",
+            dtype=object,
+            sep=",",
+            header=None,
         )
         self.game_state = df_init.values.tolist()
         self.capelitos = []
