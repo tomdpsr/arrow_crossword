@@ -46,18 +46,14 @@ def generate_arrow_crossword(main_dictionary_folder: str, map_file: str):
             return True
         capelito = arrow_crossword.capelitos[capelito_index]
         if not capelito.is_set:
-            while (
-                capelito.possible_values != []
-                and capelito.nb_tries < opts["nb_max_tries_per_word"]
-            ):
+            for possible_value in capelito.possible_values:
                 capelito.nb_tries += 1
-                chosen_word = capelito.possible_values.pop()
                 logger.debug(
-                    f"{capelito_index}/{max_size} -> {chosen_word} ({capelito.nb_tries})"
+                    f"{capelito_index}/{max_size} -> {possible_value} ({capelito.nb_tries})"
                 )
                 capelito.is_set = True
                 capelito.previous_word = capelito.word
-                capelito.word = chosen_word
+                capelito.word = possible_value
 
                 # maybe useless
                 arrow_crossword.game_state = set_letters(
