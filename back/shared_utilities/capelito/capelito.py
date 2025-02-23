@@ -24,6 +24,7 @@ class Capelito:
     j: int
     is_custom_capelito: bool = False
     arrowed_place_holder: ArrowedPlaceHolder = None
+    word_length: int = 0
     word: str = ""
     previous_word: str = ""
     is_set: bool = False
@@ -46,6 +47,7 @@ class Capelito:
 
     def __post_init__(self):
         self.arrowed_place_holder = get_arrowed_place_holder(self.capelito_type)
+        self.word_length = len(self.word)
 
     def update_wrapped_definition(self, new_definition=None):
         self.definition = new_definition or self.definition
@@ -174,3 +176,9 @@ class Capelito:
             "definition": self.definition,
             "is_custom_capelito": self.is_custom_capelito,
         }
+
+    def get_first_letter_j(self) -> int:
+        return self.j + self.arrowed_place_holder.j_diff
+
+    def get_first_letter_i(self) -> int:
+        return self.i + self.arrowed_place_holder.i_diff
