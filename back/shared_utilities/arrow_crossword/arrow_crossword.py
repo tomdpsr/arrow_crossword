@@ -6,7 +6,8 @@ from random import shuffle
 import pandas as pd
 
 from back.arrow_crossword_generation.utilities.generation_utilities import (
-    get_forbidden_words, get_possible_values_from_all_dic,
+    get_forbidden_words,
+    get_possible_values_from_all_dic,
 )
 from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
     get_arrowed_place_holder,
@@ -81,10 +82,12 @@ class ArrowCrossword:
         forbidden_words = get_forbidden_words(self.capelitos, validated_custom_words)
         for index, capelito in enumerate(self.capelitos):
             capelito.possible_values = get_possible_values_from_all_dic(
-                capelito.word, dictionary_hander, forbidden_words, capelito.is_custom_capelito
+                capelito.word,
+                dictionary_hander,
+                forbidden_words,
+                capelito.is_custom_capelito,
             )
             self.linked_capelitos[index] = self.find_capelitos_to_change(capelito)
-
 
         self.link_capelitos_together()
         for i in range(len(self.capelitos)):
@@ -154,9 +157,7 @@ class ArrowCrossword:
                 else:
                     self.v_capelitos[capelito.get_first_letter_j()].append(index)
 
-    def find_capelitos_to_change(
-            self, capelito: Capelito
-    ) -> list[int]:
+    def find_capelitos_to_change(self, capelito: Capelito) -> list[int]:
         capelitos_to_change = []
         for index, letter in enumerate(capelito.word):
             if capelito.arrowed_place_holder.is_horizontal:
@@ -165,8 +166,13 @@ class ArrowCrossword:
                 if current_letter_j in self.v_capelitos:
                     for capelito_v in self.v_capelitos[current_letter_j]:
                         capelito_to_update = self.capelitos[capelito_v]
-                        if capelito_to_update.get_first_letter_i() <= capelito_i <= capelito_to_update.get_first_letter_i() + len(
-                                capelito_to_update.word) - 1:
+                        if (
+                            capelito_to_update.get_first_letter_i()
+                            <= capelito_i
+                            <= capelito_to_update.get_first_letter_i()
+                            + len(capelito_to_update.word)
+                            - 1
+                        ):
                             if not capelito_to_update.is_set:
                                 capelitos_to_change.append(capelito_v)
             else:
@@ -175,8 +181,13 @@ class ArrowCrossword:
                 if current_letter_i in self.h_capelitos:
                     for capelito_h in self.h_capelitos[current_letter_i]:
                         capelito_to_update = self.capelitos[capelito_h]
-                        if capelito_to_update.get_first_letter_j() <= capelito_j <= capelito_to_update.get_first_letter_j() + len(
-                                capelito_to_update.word) - 1:
+                        if (
+                            capelito_to_update.get_first_letter_j()
+                            <= capelito_j
+                            <= capelito_to_update.get_first_letter_j()
+                            + len(capelito_to_update.word)
+                            - 1
+                        ):
                             if not capelito_to_update.is_set:
                                 capelitos_to_change.append(capelito_h)
         return capelitos_to_change

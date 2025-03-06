@@ -10,6 +10,7 @@ class DICTIONARY:
     USITO_DICTIONARY = "usito_dictionary"
     FULL_DICTIONARY = "full_dictionary"
 
+
 RESOURCE_DICTIONARIES_FOLDER = "back/resources/dictionaries"
 
 DICTIONARY_TO_PATH = {
