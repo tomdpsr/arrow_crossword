@@ -42,6 +42,9 @@ class Capelito:
             and self.capelito_type == other.capelito_type
         )
 
+    def __repr__(self) -> str:
+        return f"({self.arrowed_place_holder.unicode_char}, {self.i}, {self.j}) ,is_set={self.is_set},word={self.word}"
+
     def __hash__(self):
         return hash((self.i, self.j, self.capelito_type))
 

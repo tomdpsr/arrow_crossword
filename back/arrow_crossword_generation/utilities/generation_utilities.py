@@ -11,8 +11,6 @@ from back.shared_utilities.dictionary_handler.dictionary_handler import (
     DictionaryHandler,
 )
 
-# from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
-
 
 def set_letters(capelito: Capelito, df_game_state: list[list[str]]) -> list[list[str]]:
     arrowed_place_holder = get_arrowed_place_holder(capelito.capelito_type)
@@ -44,41 +42,6 @@ def check_number_capelito_is_set(capelitos: list[Capelito], n: int) -> bool:
             count += 1
     return count == n
 
-
-def update_possible_values(
-    capelitos: list[Capelito],
-    dictionary_hander: DictionaryHandler,
-    validated_custom_words: list[str],
-) -> tuple[list[Capelito], bool]:
-    for index, capelito in enumerate(capelitos, 1):
-        word_length = len(capelito.word)
-
-        if (
-            not capelito.is_custom_capelito
-            and capelito.word in dictionary_hander.forbidden_dictionary[word_length]
-        ):
-            logger.debug(f"forbidden - {index} ---> {capelito.word}")
-            return capelitos, False
-
-        if not capelito.is_set:
-            forbidden_words = get_forbidden_words(capelitos, validated_custom_words)
-            capelito.possible_values = get_possible_values_from_all_dic(
-                capelito.word,
-                dictionary_hander,
-                forbidden_words,
-                capelito.is_custom_capelito,
-            )
-            capelito.nb_tries = 0
-
-            if capelito.possible_values is None:
-                logger.debug(f"{index} ---> {capelito.word}")
-                if not capelito.is_custom_capelito:
-                    dictionary_hander.forbidden_dictionary[word_length].add(
-                        capelito.word
-                    )
-                return capelitos, False
-
-    return capelitos, True
 
 
 def clean_custom_possibles_words(

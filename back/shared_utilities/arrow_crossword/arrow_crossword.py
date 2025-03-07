@@ -16,6 +16,7 @@ from back.shared_utilities.capelito.capelito import Capelito
 from back.shared_utilities.dictionary_handler.dictionary_handler import (
     DictionaryHandler,
 )
+from shared_utilities.constants import RESOURCES_FOLDER
 
 
 @dataclass
@@ -62,7 +63,7 @@ class ArrowCrossword:
         self, dictionary_hander: DictionaryHandler, validated_custom_words, opts: dict
     ):
         df_init = pd.read_csv(
-            f"back/resources/maps/{self.map_file}.csv",
+            f"{RESOURCES_FOLDER}/maps/{self.map_file}.csv",
             dtype=object,
             sep=",",
             header=None,
