@@ -1,12 +1,13 @@
 import datetime
 import json
 from dataclasses import dataclass
+from random import shuffle
 
 import pandas as pd
 
 from back.arrow_crossword_generation.utilities.generation_utilities import (
-    shuffle_capelitos,
-    update_possible_values,
+    get_forbidden_words,
+    get_possible_values_from_all_dic,
 )
 from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
     get_arrowed_place_holder,
@@ -15,6 +16,7 @@ from back.shared_utilities.capelito.capelito import Capelito
 from back.shared_utilities.dictionary_handler.dictionary_handler import (
     DictionaryHandler,
 )
+from shared_utilities.constants import RESOURCES_FOLDER
 
 
 @dataclass
@@ -26,6 +28,9 @@ class ArrowCrossword:
     capelitos: list[Capelito] = None
     mystery_capelito: dict = None
     game_state: list[list[str]] = None
+    h_capelitos: dict[int, list[int]] = None
+    v_capelitos: dict[int, list[int]] = None
+    linked_capelitos: dict[int, list[int]] = None
 
     def __post_init__(self):
         if self.file_path:
@@ -58,7 +63,7 @@ class ArrowCrossword:
         self, dictionary_hander: DictionaryHandler, validated_custom_words, opts: dict
     ):
         df_init = pd.read_csv(
-            f"back/resources/maps/{self.map_file}.csv",
+            f"{RESOURCES_FOLDER}/maps/{self.map_file}.csv",
             dtype=object,
             sep=",",
             header=None,
@@ -71,16 +76,27 @@ class ArrowCrossword:
                     for digit in self.game_state[i][j]:
                         self.capelitos.append(Capelito(capelito_type=digit, i=i, j=j))
         self.update_capelitos_from_game_state()
-        self.capelitos = shuffle_capelitos(self.capelitos, opts)
-        self.capelitos, _ = update_possible_values(
-            self.capelitos, dictionary_hander, validated_custom_words, opts
-        )
+        self.capelitos = self.shuffle_and_tag_capelitos(opts)
+
+        self.init_capelitos_h_v()
+        self.linked_capelitos = {}
+        forbidden_words = get_forbidden_words(self.capelitos, validated_custom_words)
+        for index, capelito in enumerate(self.capelitos):
+            capelito.possible_values = get_possible_values_from_all_dic(
+                capelito.word,
+                dictionary_hander,
+                forbidden_words,
+                capelito.is_custom_capelito,
+            )
+            self.linked_capelitos[index] = self.find_capelitos_to_change(capelito)
+
         self.link_capelitos_together()
         for i in range(len(self.capelitos)):
             self.capelitos[i].previous_word = self.capelitos[i].word
 
     def link_capelitos_together(self):
         # Sorry for the n square
+        # Only for the capelitos who share the same definition textbox
         for c in self.capelitos:
             if c.linked_capelito is None:
                 for c2 in self.capelitos:
@@ -127,3 +143,64 @@ class ArrowCrossword:
                 if j == len(self.game_state[0]) or i == len(self.game_state):
                     break
             capelito.word = letters
+
+    def init_capelitos_h_v(self):
+        self.h_capelitos, self.v_capelitos = {}, {}
+        for index, capelito in enumerate(self.capelitos):
+            if capelito.arrowed_place_holder.is_horizontal:
+                if capelito.get_first_letter_i() not in self.h_capelitos:
+                    self.h_capelitos[capelito.get_first_letter_i()] = [index]
+                else:
+                    self.h_capelitos[capelito.get_first_letter_i()].append(index)
+            else:
+                if capelito.get_first_letter_j() not in self.v_capelitos:
+                    self.v_capelitos[capelito.get_first_letter_j()] = [index]
+                else:
+                    self.v_capelitos[capelito.get_first_letter_j()].append(index)
+
+    def find_capelitos_to_change(self, capelito: Capelito) -> list[int]:
+        capelitos_to_change = []
+        for index, letter in enumerate(capelito.word):
+            if capelito.arrowed_place_holder.is_horizontal:
+                capelito_i = capelito.get_first_letter_i()
+                current_letter_j = capelito.get_first_letter_j() + index
+                if current_letter_j in self.v_capelitos:
+                    for capelito_v in self.v_capelitos[current_letter_j]:
+                        capelito_to_update = self.capelitos[capelito_v]
+                        if (
+                            capelito_to_update.get_first_letter_i()
+                            <= capelito_i
+                            <= capelito_to_update.get_first_letter_i()
+                            + len(capelito_to_update.word)
+                            - 1
+                        ):
+                            if not capelito_to_update.is_set:
+                                capelitos_to_change.append(capelito_v)
+            else:
+                capelito_j = capelito.get_first_letter_j()
+                current_letter_i = capelito.get_first_letter_i() + index
+                if current_letter_i in self.h_capelitos:
+                    for capelito_h in self.h_capelitos[current_letter_i]:
+                        capelito_to_update = self.capelitos[capelito_h]
+                        if (
+                            capelito_to_update.get_first_letter_j()
+                            <= capelito_j
+                            <= capelito_to_update.get_first_letter_j()
+                            + len(capelito_to_update.word)
+                            - 1
+                        ):
+                            if not capelito_to_update.is_set:
+                                capelitos_to_change.append(capelito_h)
+        return capelitos_to_change
+
+    def shuffle_and_tag_capelitos(self, opts: dict) -> list[Capelito]:
+        # We only keep min 3 length words
+        custom_capelitos = [d for d in self.capelitos if len(d.word) > 2]
+        shuffle(custom_capelitos)
+        custom_capelitos = custom_capelitos[: opts["nb_custom_capelitos_min"]]
+        for custom_capelito in custom_capelitos:
+            custom_capelito.is_custom_capelito = True
+
+        capelitos = [d for d in self.capelitos if d not in custom_capelitos]
+        capelitos = sorted(capelitos, key=lambda x: len(x.word), reverse=True)
+        return custom_capelitos + capelitos
