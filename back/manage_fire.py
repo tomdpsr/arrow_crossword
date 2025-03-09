@@ -1,3 +1,5 @@
+from venv import logger
+
 import fire
 
 from back.arrow_crossword_generation.enrich_arrow_crossword_definition import (
@@ -23,7 +25,10 @@ class GenerateArrowCrossword(object):
         self.arrow_crossword = ArrowCrossword(file_path=arrow_crossword_file_path)
 
     def generate_arrow_crosswords(self, dictionary, map_file):
-        self.arrow_crossword = generate_arrow_crossword(dictionary, map_file)
+        for i in range(0, 100):
+            logger.info(f"Try {i}")
+            self.arrow_crossword = ArrowCrossword()
+            self.arrow_crossword = generate_arrow_crossword(dictionary, map_file)
         self.arrow_crossword.save_arrow_crossword_to_json()
 
     def enrich_mystery_capelitos(self):

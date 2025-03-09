@@ -8,7 +8,7 @@ def test_data_dir():
     return Path(__file__).parent / "data"
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def test_env():
     os.environ["NB_MAX_TRIES_PER_WORD"] = "10"
     os.environ["NB_CUSTOM_CAPELITOS_MIN"] = "1"
@@ -24,14 +24,6 @@ def mock_dictionary_paths(monkeypatch, test_data_dir):
     monkeypatch.setattr(
         "back.shared_utilities.dictionary_handler.constants.DICTIONARY_TO_PATH",
         mock_paths,
-    )
-
-
-@pytest.fixture(autouse=True)
-def mock_resources_path(monkeypatch):
-    monkeypatch.setattr(
-        "back.shared_utilities.constants.RESOURCES_FOLDER",
-        "tesst",
     )
 
 

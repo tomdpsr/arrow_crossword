@@ -19,6 +19,7 @@ from back.shared_utilities.arrowed_place_holder.arrowed_place_holder import (
 
 @dataclass
 class Capelito:
+    # TODO : Add length of word
     capelito_type: str
     i: int
     j: int
@@ -30,6 +31,7 @@ class Capelito:
     is_set: bool = False
     possible_values = []
     nb_tries: int = 0
+    # TODO Split into a graphical object ?
     definition: str = ""
     wrapped_capelito = None
     linked_capelito = None
