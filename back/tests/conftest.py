@@ -27,14 +27,6 @@ def mock_dictionary_paths(monkeypatch, test_data_dir):
     )
 
 
-@pytest.fixture(autouse=True)
-def mock_resources_path(monkeypatch):
-    monkeypatch.setattr(
-        "back.shared_utilities.constants.RESOURCES_FOLDER",
-        "tesst",
-    )
-
-
 @pytest.fixture()
 def mock_dictionary_handler(monkeypatch, test_data_dir):
     from back.shared_utilities.dictionary_handler.dictionary_handler import (
