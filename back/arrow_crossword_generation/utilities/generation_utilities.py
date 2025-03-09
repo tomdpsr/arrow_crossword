@@ -25,23 +25,12 @@ def set_letters(capelito: Capelito, df_game_state: list[list[str]]) -> list[list
     return df_game_state
 
 
-def check_every_capelito_has_solution(
-    capelitos: list[Capelito], capelito_index: int
-) -> bool:
-    for d in range(capelito_index, len(capelitos)):
-        if not capelitos[d].is_set and not capelitos[d].possible_values:
-            logger.debug(capelitos[d].word)
-            return False
-    return True
-
-
 def check_number_capelito_is_set(capelitos: list[Capelito], n: int) -> bool:
     count = 0
     for capelito in capelitos:
         if capelito.is_set:
             count += 1
     return count == n
-
 
 
 def clean_custom_possibles_words(
@@ -54,7 +43,7 @@ def clean_custom_possibles_words(
     return possible_words
 
 
-def get_forbidden_words(capelitos, validated_custom_words):
+def get_forbidden_words(capelitos, validated_custom_words: []):
     set_words = [w.word for w in capelitos if w.is_set]
     forbidden_words = list(set(validated_custom_words + set_words))
     return forbidden_words
@@ -63,6 +52,7 @@ def get_forbidden_words(capelitos, validated_custom_words):
 def get_possibles_values_from_dic(
     letters, sub_dict: dict, forbidden_words=[]
 ) -> list | None:
+    # TODO Add more intelligence : all dots => return set, all letters => no regexp ?
     r = re.compile(rf"{letters}")
     possible_values = list(
         set(filter(r.match, sub_dict[len(letters)])) - set(forbidden_words)
@@ -73,6 +63,10 @@ def get_possibles_values_from_dic(
 def get_possible_values_from_all_dic(
     letters, dictionary_hander, forbidden_words, should_be_custom: bool
 ) -> list[str] | None:
+
+    if letters in dictionary_hander.forbidden_dictionary[len(letters)]:
+        return []
+
     max_size = int(os.environ["NB_MAX_TRIES_PER_WORD"])
     custom_possible_values = get_possibles_values_from_dic(
         letters, dictionary_hander.custom_dictionary, forbidden_words
@@ -87,43 +81,9 @@ def get_possible_values_from_all_dic(
     return (custom_possible_values + default_possible_values)[:max_size]
 
 
-def find_capelitos_to_change(capelito: Capelito, arrow_crossword) -> list[int]:
-    capelitos_to_change = []
-    for index, letter in enumerate(capelito.word):
-        if capelito.arrowed_place_holder.is_horizontal:
-            capelito_i = capelito.get_first_letter_i()
-            current_letter_j = capelito.get_first_letter_j() + index
-            if current_letter_j in arrow_crossword.v_capelitos:
-                for capelito_v in arrow_crossword.v_capelitos[current_letter_j]:
-                    capelito_to_update = arrow_crossword.capelitos[capelito_v]
-                    if (
-                        capelito_to_update.get_first_letter_i()
-                        <= capelito_i
-                        <= capelito_to_update.get_first_letter_i()
-                        + len(capelito_to_update.word)
-                        - 1
-                    ):
-                        if not capelito_to_update.is_set:
-                            capelitos_to_change.append(capelito_v)
-        else:
-            capelito_j = capelito.get_first_letter_j()
-            current_letter_i = capelito.get_first_letter_i() + index
-            if current_letter_i in arrow_crossword.h_capelitos:
-                for capelito_h in arrow_crossword.h_capelitos[current_letter_i]:
-                    capelito_to_update = arrow_crossword.capelitos[capelito_h]
-                    if (
-                        capelito_to_update.get_first_letter_j()
-                        <= capelito_j
-                        <= capelito_to_update.get_first_letter_j()
-                        + len(capelito_to_update.word)
-                        - 1
-                    ):
-                        if not capelito_to_update.is_set:
-                            capelitos_to_change.append(capelito_h)
-    return capelitos_to_change
-
-
-def update_capelito_word_from_another(capelito_to_update, capelito_base):
+def update_capelito_word_from_another(
+    capelito_to_update: Capelito, capelito_base: Capelito
+):
     if capelito_base.arrowed_place_holder.is_horizontal:
         pos_in_word2_base = abs(
             capelito_to_update.get_first_letter_j() - capelito_base.get_first_letter_j()

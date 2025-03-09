@@ -6,7 +6,7 @@ from shared_utilities.constants import DATA_FOLDER
 
 def get_validated_custom_words() -> list:
     validated_custom_words = []
-    for file in os.listdir(f"{DATA_FOLDER}validated_capelitos"):
+    for file in os.listdir(f"{DATA_FOLDER}/validated_capelitos"):
         if file.endswith(".json"):
             arrow_crossword = ArrowCrossword(
                 file_path=f"data/validated_capelitos/{file}"

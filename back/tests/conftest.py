@@ -8,7 +8,7 @@ def test_data_dir():
     return Path(__file__).parent / "data"
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def test_env():
     os.environ["NB_MAX_TRIES_PER_WORD"] = "10"
     os.environ["NB_CUSTOM_CAPELITOS_MIN"] = "1"
