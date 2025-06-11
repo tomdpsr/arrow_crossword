@@ -3,9 +3,6 @@ import pytest
 from pathlib import Path
 
 
-
-
-
 @pytest.fixture(autouse=True)
 def env_test():
     os.environ["NB_MAX_TRIES_PER_WORD"] = "10"
@@ -33,7 +30,7 @@ def mock_dictionary_paths(monkeypatch, request):
 
 
 @pytest.fixture()
-def mock_dictionary_handler(monkeypatch, mock_dictionary_paths):
+def mock_dictionary_handler(mock_dictionary_paths):
     from back.shared_utilities.dictionary_handler.dictionary_handler import (
         DictionaryHandler,
     )

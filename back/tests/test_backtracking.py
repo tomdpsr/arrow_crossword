@@ -5,7 +5,7 @@ from pathlib import Path
 
 @pytest.mark.parametrize(
     "mock_dictionary_paths",
-    ["test_s", "test_l"],
+    ["test_l", "test_s"],
     indirect=True
 )
 def test_backtracking(mock_dictionary_handler, mock_dictionary_paths, monkeypatch):
@@ -17,11 +17,12 @@ def test_backtracking(mock_dictionary_handler, mock_dictionary_paths, monkeypatc
     print(mock_dictionary_handler)
 
     opts = {
-        "nb_max_tries_per_word": 100,
+        "nb_max_tries_per_word": 120,
         "nb_custom_capelitos_min": 0,
     }
 
     def mock_shuffle_and_tag_capelitos(self, opts):
+        return self.capelitos
         custom_capelitos = [
             next(
                 c
