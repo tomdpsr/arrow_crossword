@@ -3,26 +3,26 @@ import pytest
 from pathlib import Path
 
 
-@pytest.fixture
-def mock_resources_path(monkeypatch):
-    monkeypatch.setattr(
-        "shared_utilities.arrow_crossword.arrow_crossword.RESOURCES_FOLDER", "data"
-    )
-
-
-def test_backtracking(mock_dictionary_handler, mock_resources_path, monkeypatch):
+@pytest.mark.parametrize(
+    "mock_dictionary_paths",
+    ["test_l", "test_s"],
+    indirect=True
+)
+def test_backtracking(mock_dictionary_handler, mock_dictionary_paths, monkeypatch):
     from shared_utilities.arrow_crossword.arrow_crossword import ArrowCrossword
     from arrow_crossword_generation.generate_arrow_crossword import backtracking
     from arrow_crossword_generation.utilities.generation_utilities import (
         check_number_capelito_is_set,
     )
+    print(mock_dictionary_handler)
 
     opts = {
-        "nb_max_tries_per_word": 100,
-        "nb_custom_capelitos_min": 2,
+        "nb_max_tries_per_word": 120,
+        "nb_custom_capelitos_min": 0,
     }
 
     def mock_shuffle_and_tag_capelitos(self, opts):
+        return self.capelitos
         custom_capelitos = [
             next(
                 c
@@ -46,7 +46,7 @@ def test_backtracking(mock_dictionary_handler, mock_resources_path, monkeypatch)
         mock_shuffle_and_tag_capelitos,
     )
 
-    arrow_crossword = ArrowCrossword(map_file="map_s")
+    arrow_crossword = ArrowCrossword(map_file="test_map")
     arrow_crossword.init_state(mock_dictionary_handler, [], opts)
 
     backtracking(

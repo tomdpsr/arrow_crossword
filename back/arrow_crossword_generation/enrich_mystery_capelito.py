@@ -5,7 +5,7 @@ from random import shuffle
 import pandas as pd
 from loguru import logger
 
-from back.arrow_crossword_generation.create_dictionary import clean_dictionary
+from arrow_crossword_generation.create_dictionary import clean_dictionary
 from back.arrow_crossword_generation.utilities.generation_utilities import (
     clean_custom_possibles_words,
 )

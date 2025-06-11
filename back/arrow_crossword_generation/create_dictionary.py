@@ -33,3 +33,6 @@ def create_dictionary(dictionary: str):
             index=False,
             header=False,
         )
+
+if __name__ == "__main__":
+    create_dictionary("small_dictionary")
